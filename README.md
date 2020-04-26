@@ -1,6 +1,4 @@
-# hackernews-async-ts
-
-[Hacker News](https://news.ycombinator.com/) showcase using typescript && egg
+# EZR 帮助中心服务端
 
 ## QuickStart
 

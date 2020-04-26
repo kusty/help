@@ -1,7 +1,7 @@
 {
-  "name": "EZR.Helper.Server",
+  "name": "ezr.help.server",
   "version": "1.0.0",
-  "description": "",
+  "description": "ezr帮助中心服务端",
   "private": true,
   "egg": {
     "typescript": true,
@@ -10,7 +10,7 @@
   "scripts": {
     "start": "egg-scripts start --daemon --title=egg-server-EZR.Helper.Server",
     "stop": "egg-scripts stop --title=egg-server-EZR.Helper.Server",
-    "dev": "egg-bin dev",
+    "dev": "egg-bin dev --port 8001",
     "debug": "egg-bin debug",
     "test-local": "egg-bin test",
     "test": "npm run lint -- --fix && npm run test-local",
@@ -22,12 +22,21 @@
     "clean": "ets clean"
   },
   "dependencies": {
+    "await-stream-ready": "^1.0.1",
+    "axios": "^0.19.2",
     "egg": "^2.6.1",
     "egg-cors": "^2.2.3",
     "egg-redis": "^2.4.0",
     "egg-scripts": "^2.6.0",
     "egg-sequelize": "^5.2.1",
-    "egg-validate-plus": "^1.1.6"
+    "egg-validate-plus": "^1.1.6",
+    "lodash": "^4.17.15",
+    "md5": "^2.2.1",
+    "moment": "^2.24.0",
+    "mysql2": "^2.1.0",
+    "qiniu": "^7.3.0",
+    "stream-wormhole": "^1.1.0",
+    "uuid": "^7.0.3"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.40",
