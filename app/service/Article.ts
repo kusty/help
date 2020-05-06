@@ -322,4 +322,26 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
+
+
+  public async articleCounted(id) {
+    try {
+      const result = await this.ctx.model.Article.increment({
+        count: 1,
+      }, {
+        where: {
+          id,
+        },
+      });
+
+      if (result) {
+        return true;
+      }
+      this.ctx.helper.errorBody(10003, '处理错误');
+      return null;
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
 }

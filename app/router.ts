@@ -22,4 +22,7 @@ export default (app: Application) => {
 
   router.post('/api/admin/user/login', controller.user.login);
 
+  router.get('/api/article/counted', controller.article.counted);
+  router.get('/api/article/list', controller.article.counted);
+
 };

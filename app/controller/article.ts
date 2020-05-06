@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-17 10:53:50
+ * @Last Modified time: 2020-05-06 13:49:58
  */
 import { Controller } from 'egg';
 
@@ -59,8 +59,8 @@ export default class ArticleController extends Controller {
   /**
 * showdoc
 * @catalog 管理后台/文章管理/
-* @title 获取文章列表
-* @description 获取文章列表
+* @title 获取文章详情
+* @description 获取文章详情
 * @method GET
 * @url /admin/article/detail
 * @header mysess 必选 string 校验字符串
@@ -224,12 +224,27 @@ export default class ArticleController extends Controller {
     }
   }
 
+  /**
+* showdoc
+* @catalog 前台/文章/
+* @title 文章浏览计数
+* @description 文章浏览计数
+* @method GET
+* @url /article/counted
+* @param id 必选 int 文章id
+
+* @return {"code":200,"message":"ok","data":{}}
+
+* @number 99
+*/
+
+
   public async counted() {
     const { ctx } = this;
-    const validateResult = await ctx.validate('article.delete', ctx.request.body);
+    const validateResult = await ctx.validate('article.delete', ctx.request.query);
     if (!validateResult) return;
-    const { id } = ctx.request.body;
-    const result = await ctx.service.article.deleteArticle(id);
+    const { id } = ctx.request.query;
+    const result = await ctx.service.article.articleCounted(id);
     if (result) {
       ctx.helper.successBody();
     }

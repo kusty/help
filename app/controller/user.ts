@@ -14,7 +14,7 @@ export default class UserController extends Controller {
 * @title 用户登录
 * @description 用户登录的接口
 * @method get
-* @url /api/admin/user/login
+* @url /admin/user/login
 * @param token 必选 string sso拿到的token
 * @return {"code":200,"message":"ok","data":{"id":1,"name":"顾伟","phone":"13816659396","department":null,"avatar":null,"role":null,"createdAt":null,"updatedAt":null,"mysess":"ba070cd0-8491-11ea-8878-0523250f1d6b"}}
 * @return_param name string 用户姓名

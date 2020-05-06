@@ -28,6 +28,7 @@ export default class Common extends Service {
           id: v.Id,
           pid: v.TreePId,
           name: v.Name,
+          title: v.Name,
         };
       });
       return this.ctx.helper.treeData(newResult, 'id', 'pid', 'children');
@@ -47,6 +48,7 @@ export default class Common extends Service {
           id: v.Id,
           pid: v.ParentId,
           name: v.Name,
+          title: v.Name,
         };
       });
       return this.ctx.helper.treeData(newResult, 'id', 'pid', 'children');

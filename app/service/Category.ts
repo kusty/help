@@ -16,8 +16,19 @@ export default class Category extends Service {
             'displayIndex', 'DESC',
           ],
         ],
+        raw: true,
       });
-      const newResult = result.reverse();
+
+      const newResult = result.reverse().map(v => {
+        return {
+          ...v,
+          title: v.name,
+        };
+      });
+      console.log('=============================')
+      console.log(newResult);
+      console.log('=============================')
+
       return this.ctx.helper.treeData(newResult, 'id', 'pid', 'children');
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
