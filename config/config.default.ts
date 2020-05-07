@@ -19,17 +19,24 @@ export default (appInfo: EggAppInfo) => {
       depth: 5,
       parameterLimit: 1000,
     },
-    enableTypes: ['json', 'form', 'text'],
+    enableTypes: [
+      'json',
+      'form',
+      'text',
+    ],
     extendTypes: {
-      text: ['text/xml', 'application/xml'],
+      text: [
+        'text/xml',
+        'application/xml',
+      ],
     },
   };
 
   config.qiniu = {
-    bucket: 'fe-project-img',
-    accessKey: 'l5PwjOmnSazkK2JyR-g1Hv-pqVjNT1XWRdBLBIV9',
-    secretKey: 'mpk3KbYAPkjbizZkYXjliFKduWp53G5nhznx9TMW'
-  }
+    bucket: 'ezrpublic',
+    accessKey: 'dWWQZ875ucSQsgvbIacIZAneADtLkrsnJgv819rm',
+    secretKey: 'hs5OgUyJVPNlRlKxSrwRmG5t2dsKO8qwyv3w1VU5',
+  };
 
   config.middleware = [
     'errorHandler',

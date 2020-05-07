@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-14 14:58:23
+ * @Last Modified time: 2020-05-07 10:04:34
  */
 
 module.exports = app => {
@@ -25,7 +25,6 @@ module.exports = app => {
     showStatus: TINYINT, // 0:首页不显示,1:PC首页,2:APP首页,3:全部首页
     time: {
       type: DATE,
-
     },
     uptime: DATE,
   }, {

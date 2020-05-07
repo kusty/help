@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-25 21:17:21
+ * @Last Modified time: 2020-05-07 10:30:28
  */
 import { Service } from 'egg';
 import moment = require('moment');
@@ -85,7 +85,8 @@ export default class Common extends Service {
       scope: this.app.config.qiniu.bucket,
     };
     console.log('=============================')
-    console.log(options);
+    console.log(mac)
+    console.log(this.app.config.qiniu);
     console.log('=============================')
 
     const putPolicy = new qiniu.rs.PutPolicy(options);
@@ -106,6 +107,11 @@ export default class Common extends Service {
     try {
       await awaitWriteStream(stream.pipe(writeStream));
       const formUploader = new qiniu.form_up.FormUploader(config);
+
+      console.log('=============================12')
+      console.log(config)
+      console.log(formUploader);
+      console.log('=============================')
 
 
       const putExtra = new qiniu.form_up.PutExtra();
