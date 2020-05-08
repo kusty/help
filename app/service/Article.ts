@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-08 15:24:59
+ * @Last Modified time: 2020-05-08 15:38:39
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -72,6 +72,7 @@ export default class Article extends Service {
         {
           ...params,
           id: articleId,
+          contentType: params.contentType || 0,
           uri,
           categoryCode,
           count: 1,
@@ -97,7 +98,7 @@ export default class Article extends Service {
   }
 
   public async editArticle(params) {
-    let transaction;
+
     try {
       const articleId = params.id;
 
@@ -111,7 +112,7 @@ export default class Article extends Service {
         this.ctx.helper.errorBody(10003, '错误的ID');
         return null;
       }
-      transaction = await this.ctx.model.transaction();
+
       const { categoryId, pcMenuIds, appMenuIds } = params;
       const catResult = await this.ctx.model.Category.findOne({
         where: {
@@ -142,7 +143,7 @@ export default class Article extends Service {
             where: {
               id: Number(articleId),
             },
-            transaction,
+
           },
         );
         if (rr[0] === 0) {
@@ -153,7 +154,6 @@ export default class Article extends Service {
               menuType: 1,
             },
 
-            transaction,
           );
         }
       }
@@ -169,7 +169,7 @@ export default class Article extends Service {
             where: {
               id: Number(articleId),
             },
-            transaction,
+
           },
         );
         if (rr[0] === 0) {
@@ -180,14 +180,11 @@ export default class Article extends Service {
               menuType: 1,
             },
 
-            transaction,
+
           );
         }
 
       }
-
-
-
       const result = await this.ctx.model.Article.update(
         {
 
@@ -210,17 +207,17 @@ export default class Article extends Service {
           where: {
             id: articleId,
           },
-          transaction,
+
         });
       if (result[0]) {
-        await transaction.commit();
+
         return true;
       }
-      await transaction.rollback();
+
       this.ctx.helper.errorBody(10001, '文章编辑错误');
       return null;
     } catch (error) {
-      await transaction.rollback();
+
       this.ctx.throw('服务器处理错误:' + error);
     }
 

@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-08 15:17:51
+ * @Last Modified time: 2020-05-08 15:31:32
  */
 
 module.exports = app => {
@@ -32,7 +32,6 @@ module.exports = app => {
   }, {
     freezeTableName: true,
     timestamps: false,
-
   });
   Article.sync({ alter: true });
   Article.associate = () => {
