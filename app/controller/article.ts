@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-08 15:20:30
+ * @Last Modified time: 2020-05-09 02:10:47
  */
 import { Controller } from 'egg';
 
@@ -254,5 +254,110 @@ export default class ArticleController extends Controller {
       ctx.helper.successBody();
     }
   }
+
+  /**
+ * showdoc
+ * @catalog 前台/文章/
+ * @title 获取首页文章列表
+ * @description 获取首页文章列表
+ * @method GET
+ * @url /main/article/list
+ * @param type 必选 string 文章类型,hot:最热文章;recent:最新文章
+ * @param categoryCode 必选 string 分类的code
+ * @return {"code":200,"message":"ok","data":[{"id":23,"categoryId":1001,"categoryCode":"001001","title":"112","uri":"4522cf80914d11ea8cbb479ed8680227","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":0,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-05-09 00:59:24","uptime":"2020-05-09 00:59:24"},{"id":14,"categoryId":1,"categoryCode":"001","title":"1133232","uri":"f8c803107e5c11eaa7fa7fbd3a0c3ff4","keywords":null,"thumbnail":null,"content":"22","abstract":null,"author":"admin","isVideo":null,"contentType":1,"editReason":"12121221","count":1,"status":1,"showStatus":null,"time":"2020-04-13 14:33:56","uptime":"2020-05-08 15:26:21"},{"id":22,"categoryId":1,"categoryCode":"001","title":"112","uri":"ad0f54a0853711ea84ff47fbf9fcf70f","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":null,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-04-23 07:54:36","uptime":"2020-04-23 07:54:36"},{"id":21,"categoryId":1,"categoryCode":"001","title":"112","uri":"6d099c707f0211eaa7ced3cf35b250fd","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":null,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-04-15 10:18:18","uptime":"2020-04-15 10:18:18"},{"id":20,"categoryId":1,"categoryCode":"001","title":"112","uri":"48f884907f0211eab217fd5b98b8faac","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":null,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-04-15 10:17:17","uptime":"2020-04-15 10:17:17"}]}
+
+ * @number 99
+ */
+
+  public async getListForMain() {
+    const { ctx } = this;
+    let { type, categoryCode } = ctx.request.query;
+    type = type || 'hot';
+    const result = await ctx.service.article.getListForMain(
+      {
+        type,
+        categoryCode,
+      },
+    );
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
+  /**
+ * showdoc
+ * @catalog 前台/文章/
+ * @title 获取分类下文章列表
+ * @description 获取分类下文章列表
+ * @method GET
+ * @url /category/article/list
+ * @param categoryCode 可选 string 分类的code
+ * @return {"code":200,"message":"ok","data":{"list":[{"id":23,"categoryId":1001,"categoryCode":"001001","title":"112","uri":"4522cf80914d11ea8cbb479ed8680227","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":0,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-05-09 00:59:24","uptime":"2020-05-09 00:59:24"}],"totalCount":1,"current":1}}
+
+ * @number 99
+ */
+
+  public async getCategoryArticleList() {
+    const { ctx } = this;
+    let { categoryCode, page, pageSize } = ctx.request.query;
+    page = page || '1';
+    pageSize = pageSize || '10';
+    const result = await ctx.service.article.getCategoryArticleList(
+      {
+        page,
+        pageSize,
+        categoryCode,
+      },
+    );
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
+  /**
+* showdoc
+* @catalog 前台/文章/
+* @title 获取标签列表
+* @description 获取标签列表
+* @method GET
+* @url /article/keywords/list
+* @param type 必选 string 标签类型,hot:最热;all:所有
+* @return {"code":200,"message":"ok","data":["qw","das","qew","问问","wqeq","wqeqw","你好","我去","ceshi"]}
+
+* @number 99
+*/
+
+  public async getKeywordsList() {
+    const { ctx } = this;
+    let { type } = ctx.request.query;
+    type = type || 'all';
+    const result = await ctx.service.article.getKeywordsList(type);
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
+  /**
+* showdoc
+* @catalog 前台/文章/
+* @title 获取文章详情
+* @description 获取文章详情
+* @method GET
+* @url /article/detail
+* @param uri 必选 string 文章的uri
+* @return {"code":200,"message":"ok","data":{"id":14,"title":"1133232","categoryId":1,"categoryCode":"001","uri":"f8c803107e5c11eaa7fa7fbd3a0c3ff4","keywords":null,"thumbnail":null,"content":"22","abstract":null,"author":"admin","isVideo":null,"count":1,"status":1,"showStatus":null,"contentType":1,"editReason":"12121221","time":"2020-04-13 14:33:56","uptime":"2020-05-08 15:26:21","pcMenuIds":"1,2,3,4,5,6,7","appMenuIds":"2,3,4,5,6"}}
+
+* @number 99
+*/
+
+  public async getArticleDetailByUri() {
+    const { ctx } = this;
+    const { uri } = ctx.request.query;
+    const result = await ctx.service.article.getArticleDetailByUri(uri);
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
 
 }

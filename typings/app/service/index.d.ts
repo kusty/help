@@ -10,6 +10,7 @@ import ExportArticle from '../../../app/service/Article';
 import ExportCache from '../../../app/service/Cache';
 import ExportCategory from '../../../app/service/Category';
 import ExportCommon from '../../../app/service/Common';
+import ExportNews from '../../../app/service/News';
 import ExportUser from '../../../app/service/User';
 
 declare module 'egg' {
@@ -18,6 +19,7 @@ declare module 'egg' {
     cache: AutoInstanceType<typeof ExportCache>;
     category: AutoInstanceType<typeof ExportCategory>;
     common: AutoInstanceType<typeof ExportCommon>;
+    news: AutoInstanceType<typeof ExportNews>;
     user: AutoInstanceType<typeof ExportUser>;
   }
 }

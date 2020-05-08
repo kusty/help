@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-08 15:38:39
+ * @Last Modified time: 2020-05-09 02:08:51
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -200,7 +200,7 @@ export default class Article extends Service {
           contentType: params.contentType || 0,
           editReason: params.editReason || '',
           categoryCode,
-          author: 'admin',
+          author: this.ctx.session.userInfo.name,
           uptime: moment().locale('zh-cn').format('YYYY-MM-DD HH:mm:ss'),
         },
         {
@@ -263,6 +263,8 @@ export default class Article extends Service {
             'count',
             'status',
             'showStatus',
+            'contentType',
+            'editReason',
             'time',
             'uptime',
             [
@@ -339,6 +341,189 @@ export default class Article extends Service {
       this.ctx.helper.errorBody(10003, '处理错误');
       return null;
 
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  async getListForMain({ categoryCode, type }) {
+
+    let queryParmas = {};
+    if (categoryCode) {
+      queryParmas = {
+        categoryCode: {
+          [this.app.Sequelize.Op.like]: categoryCode + '%',
+        },
+      };
+    }
+    try {
+      const result = await this.ctx.model.Article.findAll({
+        where: queryParmas,
+        order: [
+          type === 'hot' ? ['uptime', 'DESC'] : ['count', 'DESC']
+        ],
+        limit: 5,
+      });
+      return result;
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  async getKeywordsList(type) {
+    try {
+      const result = await this.ctx.model.Article.findAll({
+        attributes: ['keywords'],
+        raw: true,
+      });
+      const obj = {};
+      result.forEach(v => {
+
+        if (v.keywords) {
+          const arr = v.keywords.split(',');
+          arr.forEach(vs => {
+            if (obj[vs]) {
+              obj[vs]++;
+            } else {
+              obj[vs] = 1;
+            }
+          });
+
+        }
+
+      });
+      if (type === 'hot') {
+        return Object.keys(obj).sort((a, b) => {
+          return obj[b] - obj[a];
+        }).slice(0, 20);
+      }
+      return Object.keys(obj);
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  public async getArticleDetailByUri(uri: string) {
+    try {
+      const result = await this.ctx.model.Article.findOne(
+        {
+          attributes: [
+            'id',
+            'title',
+            'categoryId',
+            'categoryCode',
+            'uri',
+            'keywords',
+            'thumbnail',
+            'content',
+            'abstract',
+            'author',
+            'isVideo',
+            'count',
+            'status',
+            'showStatus',
+            'contentType',
+            'editReason',
+            'time',
+            'uptime',
+            [
+              this.app.Sequelize.col('pcMenu.menu_id'),
+              'pcMenuIds',
+            ],
+            [
+              this.app.Sequelize.col('appMenu.menu_id'),
+              'appMenuIds',
+            ],
+          ],
+          include: [
+            {
+              model: this.ctx.model.ArticleMenu,
+              as: 'pcMenu',
+              attributes: [],
+            },
+            {
+              model: this.ctx.model.ArticleMenuApp,
+              as: 'appMenu',
+              attributes: [],
+            },
+          ],
+          where: {
+            uri,
+          },
+        },
+      );
+      if (result) {
+
+        return result;
+      }
+      this.ctx.helper.errorBody(10003, '处理错误');
+      return null;
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  async getCategoryArticleList({ page, pageSize, categoryCode }) {
+
+    let queryParmas = {};
+    if (categoryCode) {
+      queryParmas = {
+        categoryCode: {
+          [this.app.Sequelize.Op.like]: categoryCode + '%',
+        },
+      };
+    }
+    const limit = parseInt(pageSize);
+    const offset = limit * (parseInt(page) - 1);
+
+    try {
+      const result = await this.ctx.model.Article.findAndCountAll({
+        limit,
+        offset,
+        where: queryParmas,
+      });
+      return {
+        list: result.rows,
+        totalCount: result.count,
+        current: parseInt(page),
+      };
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  async getArticleCategoryList(categoryCode) {
+
+    let queryParmas = {};
+    if (categoryCode) {
+      queryParmas = {
+        code: {
+          [this.app.Sequelize.Op.like]: categoryCode + '%',
+        },
+      };
+    }
+
+    try {
+      const result = await this.ctx.model.Category.findAll({
+        order: [
+          [
+            'displayIndex', 'DESC',
+          ],
+        ],
+        where: queryParmas,
+        raw: true,
+      });
+
+      const newResult = result.reverse().map(v => {
+        return {
+          ...v,
+          title: v.name,
+        };
+      });
+
+      const returnData = this.ctx.helper.treeData(newResult, 'id', 'pid', 'children');
+      return returnData[0] ? returnData[0].children || [] : [];
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }

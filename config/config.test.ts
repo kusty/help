@@ -12,9 +12,9 @@ export default () => {
           dateStrings: true,
           typeCast: true,
         },
-        host: 'localhost',
+        host: '192.168.12.117',
         username: 'root',
-        password: 'qhmall',
+        password: '20150228',
         port: 3306,
         database: 'ezp-help',
         define: {
@@ -29,13 +29,9 @@ export default () => {
         delegate: 'baseModel',
         baseDir: 'base_model',
         dialect: 'mysql',
-        dialectOptions: {
-          dateStrings: true,
-          typeCast: true,
-        },
-        host: 'localhost',
-        username: 'root',
-        password: 'qhmall',
+        host: '192.168.12.41',
+        username: 'ezdev',
+        password: 'WyIrnqdGliZtlQs8i1iY',
         port: 3306,
         database: 'ezp-base',
         define: {
@@ -44,7 +40,7 @@ export default () => {
         },
         timezone: '+08:00',
         logQueryParameters: false,
-      }
+      },
     ],
   };
   return config;
