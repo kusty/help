@@ -24,5 +24,5 @@ export default (app: Application) => {
 
   router.get('/api/article/counted', controller.article.counted);
   router.get('/api/article/list', controller.article.counted);
-
+  router.get('/api/article/detail', controller.article.counted);
 };

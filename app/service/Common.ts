@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-07 10:30:28
+ * @Last Modified time: 2020-05-07 15:21:58
  */
 import { Service } from 'egg';
 import moment = require('moment');
@@ -84,10 +84,6 @@ export default class Common extends Service {
     const options = {
       scope: this.app.config.qiniu.bucket,
     };
-    console.log('=============================')
-    console.log(mac)
-    console.log(this.app.config.qiniu);
-    console.log('=============================')
 
     const putPolicy = new qiniu.rs.PutPolicy(options);
     const uploadToken = putPolicy.uploadToken(mac);
@@ -127,16 +123,6 @@ export default class Common extends Service {
           localFilePath,
           putExtra,
           (respErr, respBody, respInfo) => {
-            console.log('=============================')
-            console.log(respErr);
-            console.log('=============================')
-            console.log('=============================')
-            console.log(respBody);
-            console.log('=============================')
-            console.log('=============================')
-            console.log(respInfo);
-            console.log('=============================')
-
             if (respErr) {
               reject(null);
             }

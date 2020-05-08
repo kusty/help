@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-15 18:17:06
+ * @Last Modified time: 2020-05-08 15:24:59
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -200,6 +200,8 @@ export default class Article extends Service {
           isVideo: params.isVideo,
           status: params.status,
           showStatus: params.showStatus,
+          contentType: params.contentType || 0,
+          editReason: params.editReason || '',
           categoryCode,
           author: 'admin',
           uptime: moment().locale('zh-cn').format('YYYY-MM-DD HH:mm:ss'),

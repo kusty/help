@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-06 13:49:58
+ * @Last Modified time: 2020-05-08 15:20:30
  */
 import { Controller } from 'egg';
 
@@ -114,6 +114,8 @@ export default class ArticleController extends Controller {
 * @param showStatus 可选 0:首页不显示,1:PC首页,2:APP首页,3:全部首页
 * @param pcMenuIds 可选 string 文章关联的pc菜单id
 * @param appMenuIds 可选 string 文章关联的app菜单id
+* @param contentType 可选 0:自定义,1:第三方链接
+* @param editReason 可选 编辑理由
 * @return {"code":200,"message":"ok","data":{"title":"112","categoryId":"1","content":"2112","status":"0","id":22,"uri":"ad0f54a0853711ea84ff47fbf9fcf70f","categoryCode":"001","count":1,"author":"顾伟","time":"2020-04-23T07:54:36.000Z","uptime":"2020-04-23T07:54:36.000Z"}}
 * @return_param id int 文章id
 * @return_param categoryId int 分类id
@@ -163,6 +165,9 @@ export default class ArticleController extends Controller {
 * @param thumbnail 可选 string 图片
 * @param abstract 可选 string 文章简介
 * @param isVideo 可选 int 是否是视频
+* @param showStatus 可选 0:首页不显示,1:PC首页,2:APP首页,3:全部首页
+* @param contentType 可选 0:自定义,1:第三方链接
+* @param editReason 可选 编辑理由
 * @param showStatus 可选 0:首页不显示,1:PC首页,2:APP首页,3:全部首页
 * @param pcMenuIds 可选 string 文章关联的pc菜单id
 * @param appMenuIds 可选 string 文章关联的app菜单id

@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-07 10:04:34
+ * @Last Modified time: 2020-05-08 15:17:51
  */
 
 module.exports = app => {
@@ -14,15 +14,17 @@ module.exports = app => {
     categoryCode: STRING(64),
     title: STRING(256),
     uri: STRING(64),
-    keywords: STRING(64),
+    keywords: STRING(256),
     thumbnail: STRING(128),
     content: TEXT('long'),
     abstract: STRING(256),
     author: STRING(32),
     isVideo: TINYINT,
+    contentType: TINYINT,
+    editReason: STRING(256),
     count: INTEGER,
     status: TINYINT,
-    showStatus: TINYINT, // 0:首页不显示,1:PC首页,2:APP首页,3:全部首页
+    showStatus: TINYINT, // 0:首页不显示,1:PC首页,2:APP首页,3:全部首页,
     time: {
       type: DATE,
     },
@@ -32,6 +34,7 @@ module.exports = app => {
     timestamps: false,
 
   });
+  Article.sync({ alter: true });
   Article.associate = () => {
     app.model.Article.hasOne(
       app.model.ArticleMenu,
