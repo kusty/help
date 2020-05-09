@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 02:08:51
+ * @Last Modified time: 2020-05-09 11:03:02
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -129,7 +129,6 @@ export default class Article extends Service {
         this.ctx.helper.errorBody(10003, '错误的分类');
         return null;
       }
-
 
 
       if (pcMenuIds) {
@@ -360,7 +359,7 @@ export default class Article extends Service {
       const result = await this.ctx.model.Article.findAll({
         where: queryParmas,
         order: [
-          type === 'hot' ? ['uptime', 'DESC'] : ['count', 'DESC']
+          type === 'hot' ? ['uptime', 'DESC'] : ['count', 'DESC'],
         ],
         limit: 5,
       });
@@ -523,7 +522,12 @@ export default class Article extends Service {
       });
 
       const returnData = this.ctx.helper.treeData(newResult, 'id', 'pid', 'children');
-      return returnData[0] ? returnData[0].children || [] : [];
+      if (categoryCode) {
+        return returnData[0] ? returnData[0].children || [] : [];
+      }
+      return returnData;
+
+
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
