@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 02:10:47
+ * @Last Modified time: 2020-05-09 15:25:37
  */
 import { Controller } from 'egg';
 
@@ -359,5 +359,65 @@ export default class ArticleController extends Controller {
     }
   }
 
+  /**
+* showdoc
+* @catalog 前台/文章/
+* @title 获取标签下文章列表
+* @description 获取标签下文章列表
+* @method GET
+* @url /keywords/article/list
+* @param keywords 可选 string 标签名
+* @return {"code":200,"message":"ok","data":{"list":[{"id":23,"categoryId":1001,"categoryCode":"001001","title":"112","uri":"4522cf80914d11ea8cbb479ed8680227","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":0,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-05-09 00:59:24","uptime":"2020-05-09 00:59:24"}],"totalCount":1,"current":1}}
+
+* @number 99
+*/
+
+  public async getKeywordsArticleList() {
+    const { ctx } = this;
+    let { keywords, page, pageSize } = ctx.request.query;
+    page = page || '1';
+    pageSize = pageSize || '10';
+    const result = await ctx.service.article.getKeywordsArticleList(
+      {
+        page,
+        pageSize,
+        keywords,
+      },
+    );
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
+
+  /**
+  * showdoc
+  * @catalog 前台/文章/
+  * @title 获取文章列表(搜索)
+  * @description 获取文章列表(搜索)
+  * @method GET
+  * @url /article/list
+  * @param search 可选 string 搜索内容
+  * @return {"code":200,"message":"ok","data":{"list":[{"id":23,"categoryId":1001,"categoryCode":"001001","title":"112","uri":"4522cf80914d11ea8cbb479ed8680227","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":"顾伟","isVideo":null,"contentType":0,"editReason":null,"count":1,"status":0,"showStatus":null,"time":"2020-05-09 00:59:24","uptime":"2020-05-09 00:59:24"}],"totalCount":1,"current":1}}
+
+  * @number 99
+  */
+
+  public async getAllArticleList() {
+    const { ctx } = this;
+    let { search, page, pageSize } = ctx.request.query;
+    page = page || '1';
+    pageSize = pageSize || '10';
+    const result = await ctx.service.article.getAllArticleList(
+      {
+        page,
+        pageSize,
+        search,
+      },
+    );
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
 
 }

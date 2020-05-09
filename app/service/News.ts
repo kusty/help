@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 00:16:17
+ * @Last Modified time: 2020-05-09 14:42:08
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -183,6 +183,33 @@ export default class News extends Service {
       }
       this.ctx.helper.errorBody(10003, '处理错误');
       return null;
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  public async getNewsList({ page, pageSize, type }) {
+    const limit = parseInt(pageSize);
+    const offset = limit * (parseInt(page) - 1);
+
+    let queryParams = {};
+    if (type) {
+      queryParams = {
+        type,
+      }
+    }
+    try {
+      const result = await this.ctx.model.News.findAndCountAll({
+        limit,
+        offset,
+        where: queryParams,
+      });
+      return {
+        list: result.rows,
+        totalCount: result.count,
+        current: parseInt(page),
+      };
 
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);

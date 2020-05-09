@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-08 16:05:49
+ * @Last Modified time: 2020-05-09 14:34:15
  */
 
 module.exports = app => {
@@ -10,7 +10,7 @@ module.exports = app => {
 
   const News = app.model.define('news', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
-    type: INTEGER,
+    type: INTEGER, // 1.市场活动,2.官方发布,100:官网-媒体报道,101:官网-客户新闻,102:官网-生态,103:官网-产品发布 
     title: STRING(256),
     uri: STRING(64),
     thumbnail: STRING(128),

@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 11:03:02
+ * @Last Modified time: 2020-05-09 15:25:09
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -531,5 +531,67 @@ export default class Article extends Service {
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
+  }
+
+  async getKeywordsArticleList({ page, pageSize, keywords }) {
+
+    let queryParmas = {};
+    if (keywords) {
+      queryParmas = {
+        keywords: {
+          [this.app.Sequelize.Op.like]: '%' + keywords + '%',
+        },
+      };
+    }
+    const limit = parseInt(pageSize);
+    const offset = limit * (parseInt(page) - 1);
+
+    try {
+      const result = await this.ctx.model.Article.findAndCountAll({
+        limit,
+        offset,
+        where: queryParmas,
+      });
+      return {
+        list: result.rows,
+        totalCount: result.count,
+        current: parseInt(page),
+      };
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  async getAllArticleList({ page, pageSize, search }) {
+
+    let queryParmas = {};
+    if (search) {
+      queryParmas = {
+        [this.app.Sequelize.Op.or]: [
+          { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
+          { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+        ],
+      };
+    }
+    const limit = parseInt(pageSize);
+    const offset = limit * (parseInt(page) - 1);
+
+    try {
+      const result = await this.ctx.model.Article.findAndCountAll({
+        limit,
+        offset,
+        where: queryParmas,
+      });
+      return {
+        list: result.rows,
+        totalCount: result.count,
+        current: parseInt(page),
+      };
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+
   }
 }
