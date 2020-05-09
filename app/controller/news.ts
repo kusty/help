@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 14:41:09
+ * @Last Modified time: 2020-05-09 15:49:54
  */
 import { Controller } from 'egg';
 
@@ -281,6 +281,43 @@ export default class NewsController extends Controller {
         type,
       },
     );
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
+  /**
+* showdoc
+* @catalog 前台/新闻/
+* @title 获取新闻详情
+* @description 获取新闻详情
+* @method GET
+* @url /news/detail
+* @header mysess 必选 string 校验字符串
+* @param uri 必选 string 新闻uri
+* @return {"code":200,"message":"ok","data":{"id":14,"title":"1133232","categoryId":1,"categoryCode":"001","uri":"f8c803107e5c11eaa7fa7fbd3a0c3ff4","keywords":null,"thumbnail":null,"content":"22","abstract":null,"author":"admin","isVideo":null,"count":1,"status":1,"showStatus":null,"time":"2020-04-13 14:33:56","uptime":"2020-04-14 16:19:25","pcMenuIds":"1,2,3,4,5,6,7","appMenuIds":"2,3,4,5,6"}}
+* @return_param id int 新闻id
+* @return_param type int 新闻类型1.市场活动,2.官方发布,100:官网-媒体报道,101:官网-客户新闻,102:官网-生态,103:官网-产品发布
+* @return_param title string 新闻标题
+* @return_param thumbnail string 图片
+* @return_param content string 新闻内容
+* @return_param abstract string 新闻简介
+* @return_param author string 新闻作者
+* @return_param count int 浏览量
+* @return_param status int 0:已发布,1:草稿
+* @return_param time datetime 发布时间
+* @return_param uptime datetime 更新时间
+* @return_param contentType int 0:自定义,1:第三方链接
+* @return_param editReason string 编辑理由
+* @return_param showStatus int 0:首页不显示,1:PC首页,2:APP首页,3:全部首页
+* @number 99
+*/
+
+  public async getNewsDetail() {
+    const { ctx } = this;
+    const { uri } = ctx.request.query;
+    const result = await ctx.service.news.getNewsDetail(uri);
+
     if (result) {
       ctx.helper.successBody(result);
     }

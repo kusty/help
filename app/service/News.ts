@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 14:42:08
+ * @Last Modified time: 2020-05-09 15:49:03
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -211,6 +211,50 @@ export default class News extends Service {
         current: parseInt(page),
       };
 
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  public async getNewsDetailByUri(uri: string) {
+    try {
+      const result = await this.ctx.model.News.findOne(
+        {
+          attributes: [
+            'id',
+            'title',
+            'type',
+            'uri',
+            'thumbnail',
+            'content',
+            'abstract',
+            'author',
+            'count',
+            'status',
+            'contentType',
+            'editReason',
+            'time',
+            'uptime',
+
+          ],
+
+          where: {
+            uri,
+          },
+        },
+      );
+      if (result) {
+        await this.ctx.model.News.increment({
+          count: 1,
+        }, {
+          where: {
+            uri,
+          },
+        });
+        return result;
+      }
+      this.ctx.helper.errorBody(10003, '处理错误');
+      return null;
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }

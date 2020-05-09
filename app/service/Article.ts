@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 15:25:09
+ * @Last Modified time: 2020-05-09 15:47:10
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -452,7 +452,13 @@ export default class Article extends Service {
         },
       );
       if (result) {
-
+        await this.ctx.model.Article.increment({
+          count: 1,
+        }, {
+          where: {
+            uri,
+          },
+        });
         return result;
       }
       this.ctx.helper.errorBody(10003, '处理错误');

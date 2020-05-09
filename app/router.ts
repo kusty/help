@@ -35,6 +35,7 @@ export default (app: Application) => {
   router.get('/api/article/detail', controller.article.getArticleDetailByUri);
   router.get('/api/category/list', controller.category.getArticleCategoryList);
   router.get('/api/news/list', controller.news.getNewsList);
+  router.get('/api/news/detail', controller.news.getNewsDetail);
   router.get('/api/category/article/list', controller.article.getCategoryArticleList);
   router.get('/api/keywords/article/list', controller.article.getKeywordsArticleList);
   router.get('/api/article/list', controller.article.getAllArticleList);
