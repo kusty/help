@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 15:47:10
+ * @Last Modified time: 2020-05-11 00:22:23
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -222,15 +222,136 @@ export default class Article extends Service {
 
   }
 
+  public async editArticleDisplayIndex(list) {
 
-  public async getList({ page, pageSize }) {
+    try {
+      const newList: any[] = [];
+      list.forEach(async v => {
+        console.log('=============================')
+        console.log(v);
+        console.log('=============================')
+
+        const r1 = await this.ctx.model.Article.findOne({
+          where: {
+            id: v.id
+          },
+          raw: true
+        })
+        console.log('=============================')
+        console.log(r1);
+        console.log('=============================')
+
+        if (r1) {
+          newList.push(v)
+        }
+
+      })
+      console.log(1212123209090909099900)
+      const result = await this.ctx.model.Article.bulkCreate(newList,
+        { updateOnDuplicate: ['displayIndex', 'id'] }
+      );
+      if (result) {
+        return result;
+      }
+      this.ctx.helper.errorBody(10001, '编辑错误');
+      return null;
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+  public async getList({ page, pageSize,
+    title,
+    pcMenuIds,
+    appMenuIds,
+    categoryId,
+    startDate,
+    endDate,
+    status }) {
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
 
+    let queryParmas = {};
+
+    if (title) {
+      queryParmas = {
+        ...queryParmas,
+        title: {
+          [this.app.Sequelize.Op.like]: '%' + title + '%',
+        },
+      };
+    }
+
+    if (categoryId) {
+      queryParmas = {
+        ...queryParmas,
+        categoryId,
+      };
+    }
+    if (status) {
+      queryParmas = {
+        ...queryParmas,
+        status,
+      };
+    }
+
+    if (startDate || endDate) {
+      queryParmas = {
+        ...queryParmas,
+        uptime: {
+          [this.app.Sequelize.Op.between]: [
+            startDate || '2000-01-01 00:00:00', endDate || moment().format('YYYY-MM-DD HH:mm:ss'),
+          ],
+        },
+      };
+    }
     try {
       const result = await this.ctx.model.Article.findAndCountAll({
         limit,
         offset,
+        where: queryParmas,
+        include: [
+          {
+            model: this.ctx.model.ArticleMenu,
+            as: 'pcMenu',
+            where: pcMenuIds ? {
+              menuId: {
+                [this.app.Sequelize.Op.or]: [
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + '%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%' + pcMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), pcMenuIds),
+                ]
+              }
+            } : null
+          },
+          {
+            model: this.ctx.model.ArticleMenuApp,
+            as: 'appMenu',
+            where: appMenuIds ? {
+              menuId: {
+                [this.app.Sequelize.Op.or]: [
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds + '%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%' + appMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), appMenuIds),
+                ]
+              }
+            } : null
+          },
+        ],
       });
       return {
         list: result.rows,
@@ -241,8 +362,8 @@ export default class Article extends Service {
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
-  }
 
+  }
   public async getArticleDetail(id: string) {
     try {
       const result = await this.ctx.model.Article.findOne(
@@ -486,6 +607,11 @@ export default class Article extends Service {
         limit,
         offset,
         where: queryParmas,
+        order: [
+          [
+            'displayIndex', 'DESC',
+          ],
+        ],
       });
       return {
         list: result.rows,
@@ -557,6 +683,9 @@ export default class Article extends Service {
         limit,
         offset,
         where: queryParmas,
+        order: [
+          ['displayIndex', 'DESC']
+        ]
       });
       return {
         list: result.rows,
@@ -588,6 +717,9 @@ export default class Article extends Service {
         limit,
         offset,
         where: queryParmas,
+        order: [
+          ['displayIndex', 'DESC']
+        ]
       });
       return {
         list: result.rows,

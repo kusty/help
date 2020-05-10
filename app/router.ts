@@ -17,6 +17,8 @@ export default (app: Application) => {
   router.post('/api/admin/article/add', adminAuth(), controller.article.newArticle);
   router.post('/api/admin/article/delete', adminAuth(), controller.article.deleteArticle);
   router.post('/api/admin/article/edit', adminAuth(), controller.article.editArticle);
+  router.post('/api/admin/article/editDisplayIndex', adminAuth(), controller.article.editArticleDisplayIndex);
+
   router.get('/api/admin/article/list', adminAuth(), controller.article.getList);
   router.get('/api/admin/article/detail', adminAuth(), controller.article.getDetail);
 

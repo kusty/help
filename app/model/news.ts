@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 14:34:15
+ * @Last Modified time: 2020-05-10 00:25:22
  */
 
 module.exports = app => {
@@ -28,7 +28,6 @@ module.exports = app => {
     freezeTableName: true,
     timestamps: false,
   });
-  News.sync({ alter: true });
 
   return News;
 };

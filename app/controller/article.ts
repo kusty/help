@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 15:25:37
+ * @Last Modified time: 2020-05-11 00:26:41
  */
 import { Controller } from 'egg';
 
@@ -18,7 +18,13 @@ export default class ArticleController extends Controller {
 * @header mysess 必选 string 校验字符串
 * @param page 可选 string 当面页，默认1
 * @param pageSize 可选 string 每页数据，默认20
-* @param search 可选 string 搜索关键字
+* @param title 可选 string 搜索标题
+* @param pcMenuIds 可选 string 搜索pc菜单id分割
+* @param appMenuIds 可选 string 搜索app菜单id分割
+* @param categoryId 可选 string 搜索分类id
+* @param startDate 可选 string 搜索开始时间
+* @param endDate 可选 string 搜索结束时间
+* @param status 可选 string 搜索文章状态
 * @return {"code":200,"message":"ok","data":{"list":[{"id":3,"categoryId":1,"categoryCode":"001","title":"112","uri":"529730507da411eaacfb512774dec231","keywords":null,"thumbnail":null,"content":"2112","abstract":null,"author":null,"isVideo":null,"count":1,"status":0,"showStatus":null,"time":"2020-04-14 00:32:10","uptime":"2020-04-14 00:32:10"}],"totalCount":19,"current":1}}
 * @return_param id int 文章id
 * @return_param categoryId int 分类id
@@ -41,13 +47,20 @@ export default class ArticleController extends Controller {
 
   public async getList() {
     const { ctx } = this;
-    let { page, pageSize } = ctx.request.query;
+    let { page, pageSize, title, pcMenuIds, appMenuIds, categoryId, startDate, endDate, status } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getList(
       {
         page,
         pageSize,
+        title,
+        pcMenuIds,
+        appMenuIds,
+        categoryId,
+        startDate,
+        endDate,
+        status,
       },
     );
     if (result) {
@@ -55,6 +68,49 @@ export default class ArticleController extends Controller {
     }
   }
 
+  /**
+* showdoc
+* @catalog 管理后台/文章管理/
+* @title 导出文章列表
+* @description 导出文章列表
+* @method GET
+* @url /admin/article/exportList
+* @header mysess 必选 string 校验字符串
+* @param title 可选 string 搜索标题
+* @param pcMenuIds 可选 string 搜索pc菜单id分割
+* @param appMenuIds 可选 string 搜索app菜单id分割
+* @param categoryId 可选 string 搜索分类id
+* @param startDate 可选 string 搜索开始时间
+* @param endDate 可选 string 搜索结束时间
+* @param status 可选 string 搜索文章状态
+* @return 文件流
+
+
+* @number 99
+*/
+
+  public async exportList() {
+    const { ctx } = this;
+    let { page, pageSize, title, pcMenuIds, appMenuIds, categoryId, startDate, endDate, status } = ctx.request.query;
+    page = page || '1';
+    pageSize = pageSize || '10';
+    const result = await ctx.service.article.getList(
+      {
+        page,
+        pageSize,
+        title,
+        pcMenuIds,
+        appMenuIds,
+        categoryId,
+        startDate,
+        endDate,
+        status,
+      },
+    );
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
 
   /**
 * showdoc
@@ -224,6 +280,32 @@ export default class ArticleController extends Controller {
     if (!validateResult) return;
     const { id } = ctx.request.body;
     const result = await ctx.service.article.deleteArticle(id);
+    if (result) {
+      ctx.helper.successBody();
+    }
+  }
+
+  /**
+* showdoc
+* @catalog 管理后台/文章管理/
+* @title 设置文章排序
+* @description 设置文章排序
+* @method POST
+* @url /admin/article/editDisplayIndex
+* @header mysess 必选 string 校验字符串
+* @param list 必选 array 文章排序格式[{id:1,displayIndex:11},{id:2,displayIndex:33}]
+
+* @return {"code":200,"message":"ok","data":{}}
+
+* @number 99
+*/
+
+  public async editArticleDisplayIndex() {
+    const { ctx } = this;
+    const validateResult = await ctx.validate('article.editDisplayIndex', ctx.request.body);
+    if (!validateResult) return;
+    const { list } = ctx.request.body;
+    const result = await ctx.service.article.editArticleDisplayIndex(list);
     if (result) {
       ctx.helper.successBody();
     }

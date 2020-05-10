@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-08 15:31:32
+ * @Last Modified time: 2020-05-10 23:25:58
  */
 
 module.exports = app => {
@@ -22,6 +22,7 @@ module.exports = app => {
     isVideo: TINYINT,
     contentType: TINYINT,
     editReason: STRING(256),
+    displayIndex: INTEGER(11),
     count: INTEGER,
     status: TINYINT,
     showStatus: TINYINT, // 0:首页不显示,1:PC首页,2:APP首页,3:全部首页,
@@ -33,6 +34,7 @@ module.exports = app => {
     freezeTableName: true,
     timestamps: false,
   });
+
   Article.sync({ alter: true });
   Article.associate = () => {
     app.model.Article.hasOne(
