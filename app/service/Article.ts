@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 16:00:07
+ * @Last Modified time: 2020-05-11 22:01:29
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -229,24 +229,24 @@ export default class Article extends Service {
       for (const v of list) {
         const r1 = await this.ctx.model.Article.findOne({
           where: {
-            id: v.id
+            id: v.id,
           },
-          raw: true
-        })
-        console.log('=============================')
+          raw: true,
+        });
+        console.log('=============================');
         console.log(r1);
-        console.log('=============================')
+        console.log('=============================');
 
         if (r1) {
-          newList.push(v)
+          newList.push(v);
         }
 
       }
 
-      console.log(1212123209090909099900)
-      console.log(newList)
+      console.log(1212123209090909099900);
+      console.log(newList);
       const result = await this.ctx.model.Article.bulkCreate(newList,
-        { updateOnDuplicate: ['displayIndex', 'id'] }
+        { updateOnDuplicate: ['displayIndex', 'id'] },
       );
       if (result) {
         return result;
@@ -325,9 +325,9 @@ export default class Article extends Service {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), pcMenuIds),
-                ]
-              }
-            } : null
+                ],
+              },
+            } : null,
           },
           {
             model: this.ctx.model.ArticleMenuApp,
@@ -345,9 +345,9 @@ export default class Article extends Service {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), appMenuIds),
-                ]
-              }
-            } : null
+                ],
+              },
+            } : null,
           },
         ],
       });
@@ -427,9 +427,9 @@ export default class Article extends Service {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), pcMenuIds),
-                ]
-              }
-            } : null
+                ],
+              },
+            } : null,
           },
           {
             model: this.ctx.model.ArticleMenuApp,
@@ -447,27 +447,85 @@ export default class Article extends Service {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), appMenuIds),
-                ]
-              }
-            } : null
+                ],
+              },
+            } : null,
           },
         ],
+        raw: true,
       });
-      console.log('=============================')
-      console.log(result);
-      console.log('=============================')
-
 
       const pcMenuData = await this.ctx.baseModel.Menu.findAll({
         raw: true,
       });
 
-      // const appMenuData = await this.ctx.baseModel.MenuApp.findAll({
-      //   raw: true,
-      // });
-      this.ctx.helper.findParentById(1, pcMenuData)
+      const appMenuData = await this.ctx.baseModel.MenuApp.findAll({
+        raw: true,
+      });
 
-      return result
+      const newPcArticleData: any[] = [];
+      const newAppArticleData: any[] = [];
+      result.forEach(v => {
+        if (v['pcMenu.menuId']) {
+
+          const pcIdList = v['pcMenu.menuId'].split(',');
+          pcIdList.forEach(vs => {
+            const arr = this.ctx.helper.findParentList(vs, pcMenuData, 'TreePId', 'Id');
+
+            const newArr: any[] = [];
+            for (let index = 0; index < 3; index++) {
+              newArr.push({
+                name: arr[index] ? arr[index].Name : '',
+                id: arr[index] ? arr[index].Id : '',
+              });
+
+            }
+            newPcArticleData.push({
+              ...v,
+              pc1Name: newArr[0].name,
+              pc2Name: newArr[1].name,
+              pc3Name: newArr[2].name,
+            })
+          })
+        } else {
+          newPcArticleData.push({
+            ...v,
+            pc1Name: '',
+            pc2Name: '',
+            pc3Name: '',
+          })
+        }
+        if (v['appMenu.menuId']) {
+
+          const pcIdList = v['appMenu.menuId'].split(',');
+          pcIdList.forEach(vs => {
+            const arr = this.ctx.helper.findParentList(vs, appMenuData, 'ParentId', 'Id');
+
+            const newArr: any[] = [];
+            for (let index = 0; index < 3; index++) {
+              newArr.push({
+                name: arr[index] ? arr[index].Name : '',
+                id: arr[index] ? arr[index].Id : '',
+              });
+
+            }
+            newAppArticleData.push({
+              ...v,
+              app1Name: newArr[0].name,
+              app2Name: newArr[1].name,
+              app3Name: newArr[2].name,
+            })
+          })
+        } else {
+          newAppArticleData.push({
+            ...v,
+            app1Name: '',
+            app2Name: '',
+            app3Name: '',
+          })
+        }
+      })
+      return [newPcArticleData, newAppArticleData];
 
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
@@ -795,8 +853,8 @@ export default class Article extends Service {
         offset,
         where: queryParmas,
         order: [
-          ['displayIndex', 'DESC']
-        ]
+          ['displayIndex', 'DESC'],
+        ],
       });
       return {
         list: result.rows,
@@ -829,8 +887,8 @@ export default class Article extends Service {
         offset,
         where: queryParmas,
         order: [
-          ['displayIndex', 'DESC']
-        ]
+          ['displayIndex', 'DESC'],
+        ],
       });
       return {
         list: result.rows,

@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 17:16:51
+ * @Last Modified time: 2020-05-11 21:56:32
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -131,7 +131,6 @@ export default class News extends Service {
             'author',
             'count',
             'status',
-            'showStatus',
             'contentType',
             'editReason',
             'time',
@@ -203,7 +202,7 @@ export default class News extends Service {
     if (type) {
       queryParams = {
         type,
-      }
+      };
     }
     try {
       const result = await this.ctx.model.News.findAndCountAll({
@@ -241,7 +240,6 @@ export default class News extends Service {
             'editReason',
             'time',
             'uptime',
-
           ],
 
           where: {

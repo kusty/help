@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 15:34:36
+ * @Last Modified time: 2020-05-11 21:56:48
  */
 import { Controller } from 'egg';
 
@@ -317,7 +317,7 @@ export default class NewsController extends Controller {
   public async getNewsDetail() {
     const { ctx } = this;
     const { uri } = ctx.request.query;
-    const result = await ctx.service.news.getNewsDetail(uri);
+    const result = await ctx.service.news.getNewsDetailByUri(uri);
 
     if (result) {
       ctx.helper.successBody(result);

@@ -13,13 +13,36 @@ module.exports = {
     });
   },
 
-  findParentById(id, source) {
+  findParentById(id, source, level, idName) {
+
+    if (!id) {
+      return null;
+    }
     const cloneData = JSON.parse(JSON.stringify(source));
-    const data = cloneData.filter(() => {
-      const son = cloneData.filter(v => v.id === id);
-      console.log(son)
-    })
-    console.log(data)
+    const son = cloneData.filter(v => Number(v[idName]) === Number(id));
+
+
+    return son[0] ? {
+      ...son[0],
+      level,
+    } : null;
+
+  },
+
+  findParentList(id, source, parentIdName, idName) {
+    let level = 1;
+    const arr: any[] = [];
+    let obj = this.findParentById(id, source, level, idName);
+
+    while (obj) {
+      arr.push(obj);
+      level++;
+
+      obj = this.findParentById(obj[parentIdName], source, level, idName);
+    }
+
+    return arr.sort((a, b) => b.level - a.level);
+
   },
 
   successBody(data = {}) {
