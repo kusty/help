@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 15:35:07
+ * @Last Modified time: 2020-05-11 17:16:51
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -103,7 +103,7 @@ export default class News extends Service {
       const result = await this.ctx.model.News.findAndCountAll({
         limit,
         offset,
-        queryParams,
+        where: queryParams,
       });
       return {
         list: result.rows,
