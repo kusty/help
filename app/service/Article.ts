@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 22:01:29
+ * @Last Modified time: 2020-05-11 22:22:29
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -482,6 +482,7 @@ export default class Article extends Service {
             }
             newPcArticleData.push({
               ...v,
+              uri: 'https://doc.ezrpro.com/article/' + v.uri,
               pc1Name: newArr[0].name,
               pc2Name: newArr[1].name,
               pc3Name: newArr[2].name,
@@ -490,6 +491,7 @@ export default class Article extends Service {
         } else {
           newPcArticleData.push({
             ...v,
+            uri: 'https://doc.ezrpro.com/article/' + v.uri,
             pc1Name: '',
             pc2Name: '',
             pc3Name: '',
@@ -511,6 +513,7 @@ export default class Article extends Service {
             }
             newAppArticleData.push({
               ...v,
+              uri: 'https://doc.ezrpro.com/article/' + v.uri,
               app1Name: newArr[0].name,
               app2Name: newArr[1].name,
               app3Name: newArr[2].name,
@@ -519,14 +522,46 @@ export default class Article extends Service {
         } else {
           newAppArticleData.push({
             ...v,
+            uri: 'https://doc.ezrpro.com/article/' + v.uri,
             app1Name: '',
             app2Name: '',
             app3Name: '',
           })
         }
       })
-      return [newPcArticleData, newAppArticleData];
 
+      const exportData = [{
+        result: newPcArticleData,
+        headers: [[
+          { t: '1级菜单', k: 'pc1Name' },
+          { t: '2级菜单', k: 'pc2Name' },
+          { t: '3级菜单', k: 'pc3Name' },
+          { t: '文章标题', k: 'title' },
+          { t: '标签', k: 'keywords' },
+          { t: '文章链接', k: 'uri' },
+          { t: '阅读量', k: 'count' },
+          { t: '编辑人', k: 'author' },
+          { t: '编辑时间', k: 'uptime' },
+          { t: '编辑原因', k: 'editReason' },
+        ]],
+        sheetName: 'pc菜单文章列表'
+      }, {
+        result: newAppArticleData,
+        headers: [[
+          { t: '1级菜单', k: 'app1Name' },
+          { t: '2级菜单', k: 'app2Name' },
+          { t: '3级菜单', k: 'app3Name' },
+          { t: '文章标题', k: 'title' },
+          { t: '标签', k: 'keywords' },
+          { t: '文章链接', k: 'uri' },
+          { t: '阅读量', k: 'count' },
+          { t: '编辑人', k: 'author' },
+          { t: '编辑时间', k: 'uptime' },
+          { t: '编辑原因', k: 'editReason' },
+        ]],
+        sheetName: 'app菜单文章列表'
+      }];
+      return await this.ctx.helper.excelNew(exportData, moment().format('YYYYMMDDHHmmss'));
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
