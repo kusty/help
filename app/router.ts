@@ -20,6 +20,7 @@ export default (app: Application) => {
   router.post('/api/admin/article/editDisplayIndex', adminAuth(), controller.article.editArticleDisplayIndex);
 
   router.get('/api/admin/article/list', adminAuth(), controller.article.getList);
+  router.get('/api/admin/article/exportList', adminAuth(), controller.article.exportList);
   router.get('/api/admin/article/detail', adminAuth(), controller.article.getDetail);
 
   router.post('/api/admin/news/add', adminAuth(), controller.news.newNews);

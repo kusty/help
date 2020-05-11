@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-09 15:49:54
+ * @Last Modified time: 2020-05-11 15:34:36
  */
 import { Controller } from 'egg';
 
@@ -39,13 +39,14 @@ export default class NewsController extends Controller {
 
   public async getList() {
     const { ctx } = this;
-    let { page, pageSize } = ctx.request.query;
+    let { page, pageSize, type } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.news.getList(
       {
         page,
         pageSize,
+        type,
       },
     );
     if (result) {

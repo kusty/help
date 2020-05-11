@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 00:26:41
+ * @Last Modified time: 2020-05-11 13:49:57
  */
 import { Controller } from 'egg';
 
@@ -91,13 +91,10 @@ export default class ArticleController extends Controller {
 
   public async exportList() {
     const { ctx } = this;
-    let { page, pageSize, title, pcMenuIds, appMenuIds, categoryId, startDate, endDate, status } = ctx.request.query;
-    page = page || '1';
-    pageSize = pageSize || '10';
-    const result = await ctx.service.article.getList(
+    const { title, pcMenuIds, appMenuIds, categoryId, startDate, endDate, status } = ctx.request.query;
+
+    const result = await ctx.service.article.exportList(
       {
-        page,
-        pageSize,
         title,
         pcMenuIds,
         appMenuIds,

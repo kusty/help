@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 00:22:23
+ * @Last Modified time: 2020-05-11 16:00:07
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -226,11 +226,7 @@ export default class Article extends Service {
 
     try {
       const newList: any[] = [];
-      list.forEach(async v => {
-        console.log('=============================')
-        console.log(v);
-        console.log('=============================')
-
+      for (const v of list) {
         const r1 = await this.ctx.model.Article.findOne({
           where: {
             id: v.id
@@ -245,8 +241,10 @@ export default class Article extends Service {
           newList.push(v)
         }
 
-      })
+      }
+
       console.log(1212123209090909099900)
+      console.log(newList)
       const result = await this.ctx.model.Article.bulkCreate(newList,
         { updateOnDuplicate: ['displayIndex', 'id'] }
       );
@@ -364,6 +362,119 @@ export default class Article extends Service {
     }
 
   }
+
+  public async exportList({
+    title,
+    pcMenuIds,
+    appMenuIds,
+    categoryId,
+    startDate,
+    endDate,
+    status }) {
+
+    let queryParmas = {};
+
+    if (title) {
+      queryParmas = {
+        ...queryParmas,
+        title: {
+          [this.app.Sequelize.Op.like]: '%' + title + '%',
+        },
+      };
+    }
+
+    if (categoryId) {
+      queryParmas = {
+        ...queryParmas,
+        categoryId,
+      };
+    }
+    if (status) {
+      queryParmas = {
+        ...queryParmas,
+        status,
+      };
+    }
+
+    if (startDate || endDate) {
+      queryParmas = {
+        ...queryParmas,
+        uptime: {
+          [this.app.Sequelize.Op.between]: [
+            startDate || '2000-01-01 00:00:00', endDate || moment().format('YYYY-MM-DD HH:mm:ss'),
+          ],
+        },
+      };
+    }
+    try {
+      const result = await this.ctx.model.Article.findAll({
+
+        where: queryParmas,
+        include: [
+          {
+            model: this.ctx.model.ArticleMenu,
+            as: 'pcMenu',
+            where: pcMenuIds ? {
+              menuId: {
+                [this.app.Sequelize.Op.or]: [
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + '%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%' + pcMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), pcMenuIds),
+                ]
+              }
+            } : null
+          },
+          {
+            model: this.ctx.model.ArticleMenuApp,
+            as: 'appMenu',
+            where: appMenuIds ? {
+              menuId: {
+                [this.app.Sequelize.Op.or]: [
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds + '%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%' + appMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), appMenuIds),
+                ]
+              }
+            } : null
+          },
+        ],
+      });
+      console.log('=============================')
+      console.log(result);
+      console.log('=============================')
+
+
+      const pcMenuData = await this.ctx.baseModel.Menu.findAll({
+        raw: true,
+      });
+
+      // const appMenuData = await this.ctx.baseModel.MenuApp.findAll({
+      //   raw: true,
+      // });
+      this.ctx.helper.findParentById(1, pcMenuData)
+
+      return result
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+
+  }
+
   public async getArticleDetail(id: string) {
     try {
       const result = await this.ctx.model.Article.findOne(
