@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-12 20:08:17
+ * @Last Modified time: 2020-05-12 20:14:32
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -887,7 +887,9 @@ export default class Article extends Service {
     };
     if (keywords) {
       Object.assign(queryParmas, {
-        [this.app.Sequelize.Op.like]: '%' + keywords + '%',
+        keywords: {
+          [this.app.Sequelize.Op.like]: '%' + keywords + '%',
+        }
 
       })
 
