@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-12 20:05:03
+ * @Last Modified time: 2020-05-12 20:08:17
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -839,7 +839,7 @@ export default class Article extends Service {
   async getArticleCategoryList(categoryCode) {
 
     const queryParmas = {
-      status: 0
+
     };
     if (categoryCode) {
 
