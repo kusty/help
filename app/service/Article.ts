@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 22:22:29
+ * @Last Modified time: 2020-05-12 20:05:03
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -672,13 +672,15 @@ export default class Article extends Service {
 
   async getListForMain({ categoryCode, type }) {
 
-    let queryParmas = {};
+    const queryParmas = {
+      status: 0,
+    };
     if (categoryCode) {
-      queryParmas = {
+      Object.assign(queryParmas, {
         categoryCode: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-      };
+      })
     }
     try {
       const result = await this.ctx.model.Article.findAll({
@@ -699,6 +701,9 @@ export default class Article extends Service {
       const result = await this.ctx.model.Article.findAll({
         attributes: ['keywords'],
         raw: true,
+        where: {
+          status: 0,
+        }
       });
       const obj = {};
       result.forEach(v => {
@@ -795,13 +800,16 @@ export default class Article extends Service {
 
   async getCategoryArticleList({ page, pageSize, categoryCode }) {
 
-    let queryParmas = {};
+    const queryParmas = {
+      status: 0
+    };
     if (categoryCode) {
-      queryParmas = {
+
+      Object.assign(queryParmas, {
         categoryCode: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-      };
+      })
     }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
@@ -830,13 +838,16 @@ export default class Article extends Service {
 
   async getArticleCategoryList(categoryCode) {
 
-    let queryParmas = {};
+    const queryParmas = {
+      status: 0
+    };
     if (categoryCode) {
-      queryParmas = {
+
+      Object.assign(queryParmas, {
         code: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-      };
+      })
     }
 
     try {
@@ -871,13 +882,15 @@ export default class Article extends Service {
 
   async getKeywordsArticleList({ page, pageSize, keywords }) {
 
-    let queryParmas = {};
+    const queryParmas = {
+      status: 0
+    };
     if (keywords) {
-      queryParmas = {
-        keywords: {
-          [this.app.Sequelize.Op.like]: '%' + keywords + '%',
-        },
-      };
+      Object.assign(queryParmas, {
+        [this.app.Sequelize.Op.like]: '%' + keywords + '%',
+
+      })
+
     }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
@@ -904,14 +917,17 @@ export default class Article extends Service {
 
   async getAllArticleList({ page, pageSize, search }) {
 
-    let queryParmas = {};
+    const queryParmas = {
+      status: 0
+    };
     if (search) {
-      queryParmas = {
+
+      Object.assign(queryParmas, {
         [this.app.Sequelize.Op.or]: [
           { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
           { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
         ],
-      };
+      })
     }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
