@@ -7,8 +7,35 @@
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
 import moment = require('moment');
+import { sortBy } from 'lodash'
 
 export default class Article extends Service {
+  public async checkIsHotOrNew(list) {
+    if (!list || list.length < 1) {
+      return list;
+    }
+    const articleList = await this.ctx.model.Article.findAll({
+      attributes: ['count', 'time'],
+      raw: true,
+    });
+
+    const countSortedList = sortBy(articleList, (v) => {
+      return -v.count;
+    })
+
+    const num = Math.floor(Number(articleList.length * 0.2));
+    const last3 = moment().subtract('days', 2).format('YYYY-MM-DD 00:00:00')
+    const data = countSortedList[num];
+    return list.map(v => {
+      return {
+        ...v,
+        isHot: Boolean(v.count > data.count),
+        isNew: moment(v.time).isAfter(last3)
+      }
+    })
+
+
+  }
 
   public async newArticle(params) {
     let transaction;
@@ -268,7 +295,7 @@ export default class Article extends Service {
     status }) {
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
-
+    await this.checkIsHotOrNew([]);
     let queryParmas = {};
 
     if (title) {
@@ -308,6 +335,9 @@ export default class Article extends Service {
         limit,
         offset,
         where: queryParmas,
+        order: [
+          ['time', 'DESC'],
+        ],
         include: [
           {
             model: this.ctx.model.ArticleMenu,
@@ -350,7 +380,9 @@ export default class Article extends Service {
             } : null,
           },
         ],
+        raw: true
       });
+
       return {
         list: result.rows,
         totalCount: result.count,
@@ -686,11 +718,12 @@ export default class Article extends Service {
       const result = await this.ctx.model.Article.findAll({
         where: queryParmas,
         order: [
-          type === 'hot' ? ['uptime', 'DESC'] : ['count', 'DESC'],
+          type === 'hot' ? ['count', 'DESC'] : ['uptime', 'DESC'],
         ],
         limit: 5,
+        raw: true,
       });
-      return result;
+      return await this.checkIsHotOrNew(result);
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
@@ -824,9 +857,11 @@ export default class Article extends Service {
             'displayIndex', 'DESC',
           ],
         ],
+        raw: true,
       });
+
       return {
-        list: result.rows,
+        list: await this.checkIsHotOrNew(result.rows),
         totalCount: result.count,
         current: parseInt(page),
       };
@@ -905,9 +940,10 @@ export default class Article extends Service {
         order: [
           ['displayIndex', 'DESC'],
         ],
+        raw: true,
       });
       return {
-        list: result.rows,
+        list: await this.checkIsHotOrNew(result.rows),
         totalCount: result.count,
         current: parseInt(page),
       };
@@ -942,9 +978,10 @@ export default class Article extends Service {
         order: [
           ['displayIndex', 'DESC'],
         ],
+        raw: true,
       });
       return {
-        list: result.rows,
+        list: await this.checkIsHotOrNew(result.rows),
         totalCount: result.count,
         current: parseInt(page),
       };

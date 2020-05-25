@@ -99,11 +99,11 @@ export default class CategoryController extends Controller {
 * @number 99
 */
 
-  public async deleteCategory() {
+  public async updateCategoryStatus() {
     const { ctx } = this;
     const validateResult = await ctx.validate('category.delete', ctx.request.body);
     if (!validateResult) return;
-    const result = await ctx.service.category.deleteCategory(ctx.request.body);
+    const result = await ctx.service.category.updateCategoryStatus(ctx.request.body);
     if (result) {
       ctx.helper.successBody();
     }

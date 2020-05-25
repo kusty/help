@@ -12,7 +12,7 @@ export default (app: Application) => {
   router.get('/api/admin/category/list', adminAuth(), controller.category.getCategoryList);
   router.post('/api/admin/category/add', adminAuth(), controller.category.newCategory);
   router.post('/api/admin/category/edit', adminAuth(), controller.category.editCategory);
-  router.post('/api/admin/category/delete', adminAuth(), controller.category.deleteCategory);
+  router.post('/api/admin/category/updateState', adminAuth(), controller.category.updateCategoryStatus);
 
   router.post('/api/admin/article/add', adminAuth(), controller.article.newArticle);
   router.post('/api/admin/article/delete', adminAuth(), controller.article.deleteArticle);

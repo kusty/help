@@ -118,7 +118,7 @@ export default class Category extends Service {
           id: Number(params.id),
         },
       });
-      if (result[0]) {
+      if (result) {
         return true;
       }
       this.ctx.helper.errorBody(10003, '处理错误');
@@ -129,11 +129,10 @@ export default class Category extends Service {
     }
   }
 
-  public async deleteCategory(params) {
+  public async updateCategoryStatus(params) {
     try {
       const result = await this.ctx.model.Category.update({
-        name: params.name,
-        displayIndex: Number(params.displayIndex),
+        isNotShow: Number(params.state) === 1 ? 0 : 1,
       }, {
         where: {
           id: Number(params.id),
