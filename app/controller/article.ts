@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-11 13:49:57
+ * @Last Modified time: 2020-05-26 14:10:23
  */
 import { Controller } from 'egg';
 
@@ -378,7 +378,7 @@ export default class ArticleController extends Controller {
 
   public async getCategoryArticleList() {
     const { ctx } = this;
-    let { categoryCode, page, pageSize } = ctx.request.query;
+    let { categoryCode, page, pageSize, type } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getCategoryArticleList(
@@ -386,6 +386,7 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         categoryCode,
+        type,
       },
     );
     if (result) {
@@ -484,7 +485,7 @@ export default class ArticleController extends Controller {
 
   public async getAllArticleList() {
     const { ctx } = this;
-    let { search, page, pageSize } = ctx.request.query;
+    let { search, page, pageSize, type } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getAllArticleList(
@@ -492,6 +493,7 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         search,
+        type
       },
     );
     if (result) {

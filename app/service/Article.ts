@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-26 13:49:34
+ * @Last Modified time: 2020-05-26 14:10:01
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -833,7 +833,7 @@ export default class Article extends Service {
     }
   }
 
-  async getCategoryArticleList({ page, pageSize, categoryCode }) {
+  async getCategoryArticleList({ page, pageSize, categoryCode, type }) {
 
     const queryParmas = {
       status: 0
@@ -857,6 +857,9 @@ export default class Article extends Service {
         order: [
           [
             'displayIndex', 'DESC',
+          ],
+          [
+            type === 'hot' ? ['count', 'DESC'] : ['uptime', 'DESC'],
           ],
         ],
         raw: true,
@@ -957,7 +960,7 @@ export default class Article extends Service {
     }
   }
 
-  async getAllArticleList({ page, pageSize, search }) {
+  async getAllArticleList({ page, pageSize, search, type }) {
 
     const queryParmas = {
       status: 0
@@ -982,6 +985,9 @@ export default class Article extends Service {
         order: [
           [
             'displayIndex', 'DESC',
+          ],
+          [
+            type === 'hot' ? ['count', 'DESC'] : ['uptime', 'DESC'],
           ],
         ],
         raw: true,
