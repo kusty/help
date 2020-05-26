@@ -21,7 +21,7 @@ export default class Article extends Service {
 
     const countSortedList = sortBy(articleList, (v) => {
       return -v.count;
-    })
+    });
 
     const num = Math.floor(Number(articleList.length * 0.2));
     const last3 = moment().subtract('days', 2).format('YYYY-MM-DD 00:00:00')
@@ -310,7 +310,9 @@ export default class Article extends Service {
     if (categoryId) {
       queryParmas = {
         ...queryParmas,
-        categoryId,
+        categoryId: {
+          [this.app.Sequelize.Op.like]: categoryId + '%',
+        },
       };
     }
     if (status) {
@@ -323,7 +325,7 @@ export default class Article extends Service {
     if (startDate || endDate) {
       queryParmas = {
         ...queryParmas,
-        uptime: {
+        time: {
           [this.app.Sequelize.Op.between]: [
             startDate || '2000-01-01 00:00:00', endDate || moment().format('YYYY-MM-DD HH:mm:ss'),
           ],
@@ -965,7 +967,7 @@ export default class Article extends Service {
           { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
           { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
         ],
-      })
+      });
     }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
@@ -976,7 +978,9 @@ export default class Article extends Service {
         offset,
         where: queryParmas,
         order: [
-          ['displayIndex', 'DESC'],
+          [
+            'displayIndex', 'DESC',
+          ],
         ],
         raw: true,
       });

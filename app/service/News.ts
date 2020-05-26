@@ -104,6 +104,9 @@ export default class News extends Service {
         limit,
         offset,
         where: queryParams,
+        order: [
+          ['time', 'DESC'],
+        ],
       });
       return {
         list: result.rows,
