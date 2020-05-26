@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-12 20:14:32
+ * @Last Modified time: 2020-05-26 13:49:34
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -876,7 +876,9 @@ export default class Article extends Service {
   async getArticleCategoryList(categoryCode) {
 
     const queryParmas = {
-
+      isNotShow: {
+        [this.app.Sequelize.Op.ne]: 1,
+      }
     };
     if (categoryCode) {
 
