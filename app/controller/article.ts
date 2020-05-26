@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-26 14:10:23
+ * @Last Modified time: 2020-05-26 14:30:43
  */
 import { Controller } from 'egg';
 
@@ -454,7 +454,7 @@ export default class ArticleController extends Controller {
 
   public async getKeywordsArticleList() {
     const { ctx } = this;
-    let { keywords, page, pageSize } = ctx.request.query;
+    let { keywords, page, pageSize, type } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getKeywordsArticleList(
@@ -462,6 +462,7 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         keywords,
+        type,
       },
     );
     if (result) {

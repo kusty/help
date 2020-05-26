@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-26 14:10:01
+ * @Last Modified time: 2020-05-26 14:30:06
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -716,12 +716,32 @@ export default class Article extends Service {
         },
       })
     }
+    let order: any[] = [];
+    if (!type) {
+      order = [
+        [
+          'displayIndex', 'DESC',
+        ],
+        [
+          ['time', 'DESC'],
+        ],
+      ]
+    } else {
+      if (type === 'recent') {
+        order = [
+          ['time', 'DESC']
+        ]
+      }
+      if (type === 'hot') {
+        order = [
+          ['count', 'DESC']
+        ]
+      }
+    }
     try {
       const result = await this.ctx.model.Article.findAll({
         where: queryParmas,
-        order: [
-          type === 'hot' ? ['count', 'DESC'] : ['uptime', 'DESC'],
-        ],
+        order,
         limit: 5,
         raw: true,
       });
@@ -848,20 +868,34 @@ export default class Article extends Service {
     }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
-
+    let order: any[] = [];
+    if (!type) {
+      order = [
+        [
+          'displayIndex', 'DESC',
+        ],
+        [
+          ['time', 'DESC'],
+        ],
+      ]
+    } else {
+      if (type === 'recent') {
+        order = [
+          ['time', 'DESC']
+        ]
+      }
+      if (type === 'hot') {
+        order = [
+          ['count', 'DESC']
+        ]
+      }
+    }
     try {
       const result = await this.ctx.model.Article.findAndCountAll({
         limit,
         offset,
         where: queryParmas,
-        order: [
-          [
-            'displayIndex', 'DESC',
-          ],
-          [
-            type === 'hot' ? ['count', 'DESC'] : ['uptime', 'DESC'],
-          ],
-        ],
+        order,
         raw: true,
       });
 
@@ -922,7 +956,7 @@ export default class Article extends Service {
     }
   }
 
-  async getKeywordsArticleList({ page, pageSize, keywords }) {
+  async getKeywordsArticleList({ page, pageSize, keywords, type }) {
 
     const queryParmas = {
       status: 0
@@ -936,6 +970,28 @@ export default class Article extends Service {
       })
 
     }
+    let order: any[] = [];
+    if (!type) {
+      order = [
+        [
+          'displayIndex', 'DESC',
+        ],
+        [
+          ['time', 'DESC'],
+        ],
+      ]
+    } else {
+      if (type === 'recent') {
+        order = [
+          ['time', 'DESC']
+        ]
+      }
+      if (type === 'hot') {
+        order = [
+          ['count', 'DESC']
+        ]
+      }
+    }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
 
@@ -944,9 +1000,7 @@ export default class Article extends Service {
         limit,
         offset,
         where: queryParmas,
-        order: [
-          ['displayIndex', 'DESC'],
-        ],
+        order,
         raw: true,
       });
       return {
@@ -976,20 +1030,34 @@ export default class Article extends Service {
     }
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
-
+    let order: any[] = [];
+    if (!type) {
+      order = [
+        [
+          'displayIndex', 'DESC',
+        ],
+        [
+          ['time', 'DESC'],
+        ],
+      ]
+    } else {
+      if (type === 'recent') {
+        order = [
+          ['time', 'DESC']
+        ]
+      }
+      if (type === 'hot') {
+        order = [
+          ['count', 'DESC']
+        ]
+      }
+    }
     try {
       const result = await this.ctx.model.Article.findAndCountAll({
         limit,
         offset,
         where: queryParmas,
-        order: [
-          [
-            'displayIndex', 'DESC',
-          ],
-          [
-            type === 'hot' ? ['count', 'DESC'] : ['uptime', 'DESC'],
-          ],
-        ],
+        order,
         raw: true,
       });
       return {
