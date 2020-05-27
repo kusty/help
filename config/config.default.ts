@@ -50,6 +50,12 @@ export default (appInfo: EggAppInfo) => {
       'http://*:*/',
     ],
   };
+  config.jsonp = {
+    callback: 'callback', // 识别 query 中的 `callback` 参数
+    limit: 100, // 函数名最长为 100 个字符
+    whiteList: 'http://*:*/',
+  };
+
   config.cors = {
     origin: '*',
     allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH,OPTIONS',

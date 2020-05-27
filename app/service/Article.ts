@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-26 14:30:06
+ * @Last Modified time: 2020-05-27 16:15:38
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1070,5 +1070,123 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
 
+  }
+
+  public async getMenuArticleList(href) {
+
+    try {
+      const pcMenuFuncData = await this.ctx.baseModel.MenuPcFunc.findOne({
+        where: {
+          href,
+        },
+        raw: true,
+      });
+      if (!pcMenuFuncData) {
+        return []
+      }
+      const { Id } = pcMenuFuncData;
+      const pcMenuData = await this.ctx.baseModel.Menu.findOne({
+        where: {
+          MenuFuncId: Id,
+        },
+        raw: true,
+      })
+      const menuId = pcMenuData.Id;
+      if (!menuId) {
+        return []
+      }
+      const result = await this.ctx.model.Article.findAll({
+        limit: 10,
+        attributes: ['id', 'title', 'uri', 'abstract'],
+        order: [
+          ['displayIndex', 'DESC'],
+          ['uptime', 'DESC']
+        ],
+        include: [
+          {
+            model: this.ctx.model.ArticleMenu,
+            as: 'pcMenu',
+            attributes: [],
+            where: {
+              menuId: {
+                [this.app.Sequelize.Op.or]: [
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + menuId + '%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%' + menuId + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + menuId + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), menuId),
+                ],
+              },
+            }
+          },
+
+        ],
+        raw: true
+      });
+
+      return result || [];
+
+    } catch (error) {
+      return [];
+    }
+  }
+
+  public async getAppMenuArticleList(href) {
+
+    try {
+
+      const appMenuData = await this.ctx.baseModel.MenuApp.findOne({
+        where: {
+          Code: href,
+        },
+        raw: true,
+      })
+      const menuId = appMenuData.Id;
+      if (!menuId) {
+        return []
+      }
+      const result = await this.ctx.model.Article.findAll({
+        limit: 10,
+        attributes: ['id', 'title', 'uri', 'abstract'],
+        order: [
+          ['displayIndex', 'DESC'],
+          ['uptime', 'DESC']
+        ],
+        include: [
+          {
+            model: this.ctx.model.ArticleMenuApp,
+            as: 'appMenu',
+            where: {
+              menuId: {
+                [this.app.Sequelize.Op.or]: [
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + menuId + '%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%' + menuId + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                    [this.app.Sequelize.Op.like]: '%,' + menuId + ',%',
+                  }),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), menuId),
+                ],
+              },
+            },
+          },
+
+        ],
+        raw: true
+      });
+
+      return result || [];
+
+    } catch (error) {
+      return [];
+    }
   }
 }

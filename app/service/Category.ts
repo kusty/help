@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-12 15:47:36
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-14 21:02:59
+ * @Last Modified time: 2020-05-27 14:52:18
  */
 import { Service } from 'egg';
 
@@ -70,7 +70,7 @@ export default class Category extends Service {
         tpid = 0;
 
       if (pid === 0) {
-        mcode = '00' + mid;
+        mcode = '0' + mid;
       } else {
         const r1 = await this.ctx.model.Category.findOne({
           where: {

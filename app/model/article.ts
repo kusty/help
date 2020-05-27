@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-10 23:25:58
+ * @Last Modified time: 2020-05-27 13:42:44
  */
 
 module.exports = app => {
@@ -35,7 +35,7 @@ module.exports = app => {
     timestamps: false,
   });
 
-  Article.sync({ alter: true });
+
   Article.associate = () => {
     app.model.Article.hasOne(
       app.model.ArticleMenu,

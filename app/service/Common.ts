@@ -2,18 +2,17 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-07 15:21:58
+ * @Last Modified time: 2020-05-27 13:46:53
  */
 import { Service } from 'egg';
 import moment = require('moment');
 import fs = require('fs');
 import path = require('path');
 import qiniu = require('qiniu');
-import { conf } from 'qiniu/index'
+import { conf } from 'qiniu/index';
 const awaitWriteStream = require('await-stream-ready').write;
 import sendToWormhole = require('stream-wormhole');
 import md5 = require('md5');
-
 
 
 export default class Common extends Service {
@@ -104,10 +103,10 @@ export default class Common extends Service {
       await awaitWriteStream(stream.pipe(writeStream));
       const formUploader = new qiniu.form_up.FormUploader(config);
 
-      console.log('=============================12')
-      console.log(config)
+      console.log('=============================12');
+      console.log(config);
       console.log(formUploader);
-      console.log('=============================')
+      console.log('=============================');
 
 
       const putExtra = new qiniu.form_up.PutExtra();
@@ -130,7 +129,7 @@ export default class Common extends Service {
               resolve({
                 filename,
                 mime: stream.mimeType,
-                path: respBody.key
+                path: respBody.key,
               });
             } else {
               reject(null);
@@ -147,9 +146,9 @@ export default class Common extends Service {
 
     } catch (error) {
 
-      console.log('=============================')
+      console.log('=============================');
       console.log(error);
-      console.log('=============================')
+      console.log('=============================');
 
       // 如果出现错误，关闭管道
       await sendToWormhole(stream);
@@ -165,6 +164,9 @@ export default class Common extends Service {
       const result = await this.ctx.model.File.findAndCountAll({
         limit,
         offset,
+        order: [
+          ['time', 'DESC'],
+        ],
       });
       return {
         list: result.rows,

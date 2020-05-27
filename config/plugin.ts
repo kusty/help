@@ -21,7 +21,11 @@ const plugin: EggPlugin = {
   cors: {
     enable: true,
     package: 'egg-cors',
-  }
+  },
+  jsonp: {
+    enable: true,
+    package: 'egg-jsonp',
+  },
 };
 
 export default plugin;

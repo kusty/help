@@ -42,4 +42,6 @@ export default (app: Application) => {
   router.get('/api/category/article/list', controller.article.getCategoryArticleList);
   router.get('/api/keywords/article/list', controller.article.getKeywordsArticleList);
   router.get('/api/article/list', controller.article.getAllArticleList);
+  router.get('/api/menu/article/list', controller.article.getMenuArticleList);
+  router.get('/api/appMenu/article/list', controller.article.getAppMenuArticleList);
 };

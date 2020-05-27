@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-26 14:30:43
+ * @Last Modified time: 2020-05-27 16:19:59
  */
 import { Controller } from 'egg';
 
@@ -501,5 +501,26 @@ export default class ArticleController extends Controller {
       ctx.helper.successBody(result);
     }
   }
+
+  public async getMenuArticleList() {
+    const { ctx } = this;
+    const { href } = ctx.request.query;
+
+    const result = await ctx.service.article.getMenuArticleList(href || '');
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
+  public async getAppMenuArticleList() {
+    const { ctx } = this;
+    const { href } = ctx.request.query;
+
+    const result = await ctx.service.article.getAppMenuArticleList(href || '');
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
+
 
 }
