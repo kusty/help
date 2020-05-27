@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 17:04:16
+ * @Last Modified time: 2020-05-27 17:10:49
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1187,6 +1187,7 @@ export default class Article extends Service {
           return {
             ...v,
             uri: 'https://doc.ezrpro.com/article/' + v.uri,
+            count: '' + v.count
           }
         })
       }

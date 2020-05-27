@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 16:19:59
+ * @Last Modified time: 2020-05-27 17:11:57
  */
 import { Controller } from 'egg';
 
@@ -494,7 +494,7 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         search,
-        type
+        type,
       },
     );
     if (result) {
@@ -518,7 +518,12 @@ export default class ArticleController extends Controller {
 
     const result = await ctx.service.article.getAppMenuArticleList(href || '');
     if (result) {
-      ctx.helper.successBody(result);
+      this.ctx.body = {
+        data: result,
+        result: true,
+        msg: 'get success',
+
+      };
     }
   }
 
