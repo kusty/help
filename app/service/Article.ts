@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 16:15:38
+ * @Last Modified time: 2020-05-27 17:04:16
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -24,7 +24,7 @@ export default class Article extends Service {
     });
 
     const num = Math.floor(Number(articleList.length * 0.2));
-    const last3 = moment().subtract('days', 2).format('YYYY-MM-DD 00:00:00')
+    const last3 = moment().subtract('days', 6).format('YYYY-MM-DD 00:00:00')
     const data = countSortedList[num];
     return list.map(v => {
       return {
@@ -1096,8 +1096,7 @@ export default class Article extends Service {
         return []
       }
       const result = await this.ctx.model.Article.findAll({
-        limit: 10,
-        attributes: ['id', 'title', 'uri', 'abstract'],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time'],
         order: [
           ['displayIndex', 'DESC'],
           ['uptime', 'DESC']
@@ -1129,7 +1128,7 @@ export default class Article extends Service {
         raw: true
       });
 
-      return result || [];
+      return this.checkIsHotOrNew(result) || [];
 
     } catch (error) {
       return [];
@@ -1150,9 +1149,8 @@ export default class Article extends Service {
       if (!menuId) {
         return []
       }
-      const result = await this.ctx.model.Article.findAll({
-        limit: 10,
-        attributes: ['id', 'title', 'uri', 'abstract'],
+      let result = await this.ctx.model.Article.findAll({
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time'],
         order: [
           ['displayIndex', 'DESC'],
           ['uptime', 'DESC']
@@ -1161,6 +1159,7 @@ export default class Article extends Service {
           {
             model: this.ctx.model.ArticleMenuApp,
             as: 'appMenu',
+            attributes: [],
             where: {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
@@ -1183,9 +1182,22 @@ export default class Article extends Service {
         raw: true
       });
 
-      return result || [];
+      if (result.length) {
+        result = result.map(v => {
+          return {
+            ...v,
+            uri: 'https://doc.ezrpro.com/article/' + v.uri,
+          }
+        })
+      }
+
+      return this.checkIsHotOrNew(result) || [];
 
     } catch (error) {
+      console.log('=============================')
+      console.log(error);
+      console.log('=============================')
+
       return [];
     }
   }
