@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:44:57
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-13 21:25:46
+ * @Last Modified time: 2020-05-27 20:19:09
  */
 
 module.exports = app => {
@@ -15,10 +15,14 @@ module.exports = app => {
     },
     name: STRING(32),
     pid: INTEGER,
-    displayIndex: INTEGER,
+    displayIndex: {
+      type: INTEGER,
+      field: 'displayIdx',
+    },
     isNotShow: {
       type: TINYINT(1),
       defaltValue: 0,
+      field: 'isNotShow',
     },
   }, {
     freezeTableName: true,

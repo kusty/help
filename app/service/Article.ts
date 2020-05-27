@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 17:18:55
+ * @Last Modified time: 2020-05-27 19:30:01
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1028,6 +1028,15 @@ export default class Article extends Service {
         ],
       });
     }
+
+    this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 9000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(uptime,sysdate())+900000  else 0 end as c2,count as c3 from article order by c1 desc,c2 desc,c3 desc limit 12,11').then(projects => {
+      console.log('=============================')
+      console.log(1111);
+      console.log('=============================')
+
+      console.log(projects)
+    })
+
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
     let order: any[] = [];
@@ -1189,6 +1198,7 @@ export default class Article extends Service {
             uri: 'https://doc.ezrpro.com/article/' + v.uri,
             count: '' + v.count,
             isVideo: '' + v.isVideo,
+            isVideoShow: Boolean(v.isVideo === 1)
           }
         })
       }

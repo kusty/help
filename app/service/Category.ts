@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-12 15:47:36
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 14:52:18
+ * @Last Modified time: 2020-05-27 20:16:25
  */
 import { Service } from 'egg';
 
@@ -25,9 +25,6 @@ export default class Category extends Service {
           title: v.name,
         };
       });
-      console.log('=============================')
-      console.log(newResult);
-      console.log('=============================')
 
       return this.ctx.helper.treeData(newResult, 'id', 'pid', 'children');
     } catch (error) {

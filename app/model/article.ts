@@ -2,7 +2,7 @@
  * @Author: guwei
  * @Date: 2020-04-08 20:45:39
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 13:42:44
+ * @Last Modified time: 2020-05-27 20:14:48
  */
 
 module.exports = app => {
@@ -10,8 +10,14 @@ module.exports = app => {
 
   const Article = app.model.define('article', {
     id: { type: INTEGER, primaryKey: true, autoIncrement: true },
-    categoryId: INTEGER,
-    categoryCode: STRING(64),
+    categoryId: {
+      type: INTEGER,
+      field: 'categoryId',
+    },
+    categoryCode: {
+      type: STRING(64),
+      field: 'categoryCode',
+    },
     title: STRING(256),
     uri: STRING(64),
     keywords: STRING(256),
@@ -19,13 +25,19 @@ module.exports = app => {
     content: TEXT('long'),
     abstract: STRING(256),
     author: STRING(32),
-    isVideo: TINYINT,
+    isVideo: {
+      type: TINYINT,
+      field: 'isVideo',
+    },
     contentType: TINYINT,
     editReason: STRING(256),
     displayIndex: INTEGER(11),
     count: INTEGER,
     status: TINYINT,
-    showStatus: TINYINT, // 0:首页不显示,1:PC首页,2:APP首页,3:全部首页,
+    showStatus: {
+      type: TINYINT,
+      field: 'showStatus',
+    }, // 0:首页不显示,1:PC首页,2:APP首页,3:全部首页,
     time: {
       type: DATE,
     },
