@@ -755,6 +755,7 @@ export default class Article extends Service {
     }
     try {
       const result = await this.ctx.model.Article.findAll({
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
         where: queryParmas,
         order,
         limit: 5,
@@ -894,7 +895,10 @@ export default class Article extends Service {
         where: queryParmas,
       });
 
-      const newArr = data[0].map(v => pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']));
+      const newArr = data[0].map((v: any) => {
+        v.displayIndex = v.display_index;
+        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']);
+      });
       return {
         list: await this.checkIsHotOrNew(newArr),
         totalCount,
@@ -979,7 +983,10 @@ export default class Article extends Service {
         where: queryParmas,
       });
 
-      const newArr = data[0].map(v => pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']));
+      const newArr = data[0].map((v: any) => {
+        v.displayIndex = v.display_index;
+        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']);
+      });
       return {
         list: await this.checkIsHotOrNew(newArr),
         totalCount,
@@ -1018,7 +1025,10 @@ export default class Article extends Service {
         where: queryParmas,
       });
 
-      const newArr = data[0].map(v => pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']));
+      const newArr = data[0].map((v: any) => {
+        v.displayIndex = v.display_index;
+        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']);
+      });
       return {
         list: await this.checkIsHotOrNew(newArr),
         totalCount,
