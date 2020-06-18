@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-04-15 17:58:49
+ * @Last Modified time: 2020-05-28 23:55:12
  */
 import { Service } from 'egg';
 import { request } from '../utils/http';
@@ -20,7 +20,6 @@ export default class User extends Service {
         const r1 = await this.ctx.model.User.findOne({
           where: {
             phone: data.phone,
-            name: data.chineseName,
           },
           raw: true,
         });
@@ -44,4 +43,6 @@ export default class User extends Service {
     }
 
   }
+
+
 }

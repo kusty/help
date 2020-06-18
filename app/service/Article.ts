@@ -2,12 +2,12 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 19:30:01
+ * @Last Modified time: 2020-05-29 00:48:57
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
 import moment = require('moment');
-import { sortBy } from 'lodash'
+import { sortBy, pick, orderBy } from 'lodash';
 
 export default class Article extends Service {
   public async checkIsHotOrNew(list) {
@@ -19,20 +19,20 @@ export default class Article extends Service {
       raw: true,
     });
 
-    const countSortedList = sortBy(articleList, (v) => {
+    const countSortedList = sortBy(articleList, v => {
       return -v.count;
     });
 
     const num = Math.floor(Number(articleList.length * 0.2));
-    const last3 = moment().subtract('days', 6).format('YYYY-MM-DD 00:00:00')
+    const last3 = moment().subtract('days', 6).format('YYYY-MM-DD 00:00:00');
     const data = countSortedList[num];
     return list.map(v => {
       return {
         ...v,
         isHot: Boolean(v.count > data.count),
-        isNew: moment(v.time).isAfter(last3)
-      }
-    })
+        isNew: moment(v.time).isAfter(last3),
+      };
+    });
 
 
   }
@@ -347,16 +347,16 @@ export default class Article extends Service {
             where: pcMenuIds ? {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + '%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%' + pcMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), pcMenuIds),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), pcMenuIds),
                 ],
               },
             } : null,
@@ -367,22 +367,22 @@ export default class Article extends Service {
             where: appMenuIds ? {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + '%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%' + appMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), appMenuIds),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), appMenuIds),
                 ],
               },
             } : null,
           },
         ],
-        raw: true
+        raw: true,
       });
 
       return {
@@ -451,16 +451,16 @@ export default class Article extends Service {
             where: pcMenuIds ? {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + '%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%' + pcMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), pcMenuIds),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), pcMenuIds),
                 ],
               },
             } : null,
@@ -471,16 +471,16 @@ export default class Article extends Service {
             where: appMenuIds ? {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + '%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%' + appMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), appMenuIds),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), appMenuIds),
                 ],
               },
             } : null,
@@ -520,8 +520,8 @@ export default class Article extends Service {
               pc1Name: newArr[0].name,
               pc2Name: newArr[1].name,
               pc3Name: newArr[2].name,
-            })
-          })
+            });
+          });
         } else {
           newPcArticleData.push({
             ...v,
@@ -529,7 +529,7 @@ export default class Article extends Service {
             pc1Name: '',
             pc2Name: '',
             pc3Name: '',
-          })
+          });
         }
         if (v['appMenu.menuId']) {
 
@@ -551,8 +551,8 @@ export default class Article extends Service {
               app1Name: newArr[0].name,
               app2Name: newArr[1].name,
               app3Name: newArr[2].name,
-            })
-          })
+            });
+          });
         } else {
           newAppArticleData.push({
             ...v,
@@ -560,9 +560,9 @@ export default class Article extends Service {
             app1Name: '',
             app2Name: '',
             app3Name: '',
-          })
+          });
         }
-      })
+      });
 
       const exportData = [{
         result: newPcArticleData,
@@ -578,7 +578,7 @@ export default class Article extends Service {
           { t: '编辑时间', k: 'uptime' },
           { t: '编辑原因', k: 'editReason' },
         ]],
-        sheetName: 'pc菜单文章列表'
+        sheetName: 'pc菜单文章列表',
       }, {
         result: newAppArticleData,
         headers: [[
@@ -593,7 +593,7 @@ export default class Article extends Service {
           { t: '编辑时间', k: 'uptime' },
           { t: '编辑原因', k: 'editReason' },
         ]],
-        sheetName: 'app菜单文章列表'
+        sheetName: 'app菜单文章列表',
       }];
       return await this.ctx.helper.excelNew(exportData, moment().format('YYYYMMDDHHmmss'));
     } catch (error) {
@@ -626,11 +626,11 @@ export default class Article extends Service {
             'time',
             'uptime',
             [
-              this.app.Sequelize.col('pcMenu.menu_id'),
+              this.app.Sequelize.col('pcMenu.menuId'),
               'pcMenuIds',
             ],
             [
-              this.app.Sequelize.col('appMenu.menu_id'),
+              this.app.Sequelize.col('appMenu.menuId'),
               'appMenuIds',
             ],
           ],
@@ -670,7 +670,16 @@ export default class Article extends Service {
           id,
         },
       });
-
+      await this.ctx.model.ArticleMenu.destroy({
+        where: {
+          id,
+        },
+      });
+      await this.ctx.model.ArticleMenuApp.destroy({
+        where: {
+          id,
+        },
+      });
       if (result) {
         return true;
       }
@@ -714,7 +723,7 @@ export default class Article extends Service {
         categoryCode: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-      })
+      });
     }
     let order: any[] = [];
     if (!type) {
@@ -723,19 +732,25 @@ export default class Article extends Service {
           'displayIndex', 'DESC',
         ],
         [
-          ['time', 'DESC'],
+          [
+            'time', 'DESC',
+          ],
         ],
-      ]
+      ];
     } else {
       if (type === 'recent') {
         order = [
-          ['time', 'DESC']
-        ]
+          [
+            'time', 'DESC',
+          ],
+        ];
       }
       if (type === 'hot') {
         order = [
-          ['count', 'DESC']
-        ]
+          [
+            'count', 'DESC',
+          ],
+        ];
       }
     }
     try {
@@ -758,7 +773,7 @@ export default class Article extends Service {
         raw: true,
         where: {
           status: 0,
-        }
+        },
       });
       const obj = {};
       result.forEach(v => {
@@ -805,17 +820,18 @@ export default class Article extends Service {
             'isVideo',
             'count',
             'status',
+            'displayIndex',
             'showStatus',
             'contentType',
             'editReason',
             'time',
             'uptime',
             [
-              this.app.Sequelize.col('pcMenu.menu_id'),
+              this.app.Sequelize.col('pcMenu.menuId'),
               'pcMenuIds',
             ],
             [
-              this.app.Sequelize.col('appMenu.menu_id'),
+              this.app.Sequelize.col('appMenu.menuId'),
               'appMenuIds',
             ],
           ],
@@ -853,10 +869,10 @@ export default class Article extends Service {
     }
   }
 
-  async getCategoryArticleList({ page, pageSize, categoryCode, type }) {
+  async getCategoryArticleList({ page, pageSize, categoryCode }) {
 
     const queryParmas = {
-      status: 0
+      status: 0,
     };
     if (categoryCode) {
 
@@ -864,44 +880,24 @@ export default class Article extends Service {
         categoryCode: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-      })
+      });
     }
+
+    const newSearch = categoryCode ? (' categoryCode LIKE "' + categoryCode + '%" AND') : '';
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
-    let order: any[] = [];
-    if (!type) {
-      order = [
-        [
-          'displayIndex', 'DESC',
-        ],
-        [
-          ['time', 'DESC'],
-        ],
-      ]
-    } else {
-      if (type === 'recent') {
-        order = [
-          ['time', 'DESC']
-        ]
-      }
-      if (type === 'hot') {
-        order = [
-          ['count', 'DESC']
-        ]
-      }
-    }
+
     try {
-      const result = await this.ctx.model.Article.findAndCountAll({
-        limit,
-        offset,
+
+      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
-        order,
-        raw: true,
       });
 
+      const newArr = data[0].map(v => pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']));
       return {
-        list: await this.checkIsHotOrNew(result.rows),
-        totalCount: result.count,
+        list: await this.checkIsHotOrNew(newArr),
+        totalCount,
         current: parseInt(page),
       };
 
@@ -915,7 +911,7 @@ export default class Article extends Service {
     const queryParmas = {
       isNotShow: {
         [this.app.Sequelize.Op.ne]: 1,
-      }
+      },
     };
     if (categoryCode) {
 
@@ -923,7 +919,7 @@ export default class Article extends Service {
         code: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-      })
+      });
     }
 
     try {
@@ -956,56 +952,37 @@ export default class Article extends Service {
     }
   }
 
-  async getKeywordsArticleList({ page, pageSize, keywords, type }) {
+  async getKeywordsArticleList({ page, pageSize, keywords }) {
 
     const queryParmas = {
-      status: 0
+      status: 0,
     };
     if (keywords) {
       Object.assign(queryParmas, {
         keywords: {
           [this.app.Sequelize.Op.like]: '%' + keywords + '%',
-        }
+        },
 
-      })
+      });
 
     }
-    let order: any[] = [];
-    if (!type) {
-      order = [
-        [
-          'displayIndex', 'DESC',
-        ],
-        [
-          ['time', 'DESC'],
-        ],
-      ]
-    } else {
-      if (type === 'recent') {
-        order = [
-          ['time', 'DESC']
-        ]
-      }
-      if (type === 'hot') {
-        order = [
-          ['count', 'DESC']
-        ]
-      }
-    }
+
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
+    const newSearch = keywords ? (' keywords LIKE "%' + keywords + '%" AND') : '';
+
 
     try {
-      const result = await this.ctx.model.Article.findAndCountAll({
-        limit,
-        offset,
+
+      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
-        order,
-        raw: true,
       });
+
+      const newArr = data[0].map(v => pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']));
       return {
-        list: await this.checkIsHotOrNew(result.rows),
-        totalCount: result.count,
+        list: await this.checkIsHotOrNew(newArr),
+        totalCount,
         current: parseInt(page),
       };
 
@@ -1014,11 +991,12 @@ export default class Article extends Service {
     }
   }
 
-  async getAllArticleList({ page, pageSize, search, type }) {
+  async getAllArticleList({ page, pageSize, search }) {
 
     const queryParmas = {
-      status: 0
+      status: 0,
     };
+
     if (search) {
 
       Object.assign(queryParmas, {
@@ -1028,50 +1006,22 @@ export default class Article extends Service {
         ],
       });
     }
-
-    this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 9000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(uptime,sysdate())+900000  else 0 end as c2,count as c3 from article order by c1 desc,c2 desc,c3 desc limit 12,11').then(projects => {
-      console.log('=============================')
-      console.log(1111);
-      console.log('=============================')
-
-      console.log(projects)
-    })
-
+    const newSearch = search ? ('title LIKE "%' + search + '%" OR content LIKE "%' + search + '%"AND') : '';
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
-    let order: any[] = [];
-    if (!type) {
-      order = [
-        [
-          'displayIndex', 'DESC',
-        ],
-        [
-          ['time', 'DESC'],
-        ],
-      ]
-    } else {
-      if (type === 'recent') {
-        order = [
-          ['time', 'DESC']
-        ]
-      }
-      if (type === 'hot') {
-        order = [
-          ['count', 'DESC']
-        ]
-      }
-    }
+
+
     try {
-      const result = await this.ctx.model.Article.findAndCountAll({
-        limit,
-        offset,
+
+      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
-        order,
-        raw: true,
       });
+
+      const newArr = data[0].map(v => pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']));
       return {
-        list: await this.checkIsHotOrNew(result.rows),
-        totalCount: result.count,
+        list: await this.checkIsHotOrNew(newArr),
+        totalCount,
         current: parseInt(page),
       };
 
@@ -1091,7 +1041,7 @@ export default class Article extends Service {
         raw: true,
       });
       if (!pcMenuFuncData) {
-        return []
+        return [];
       }
       const { Id } = pcMenuFuncData;
       const pcMenuData = await this.ctx.baseModel.Menu.findOne({
@@ -1099,16 +1049,16 @@ export default class Article extends Service {
           MenuFuncId: Id,
         },
         raw: true,
-      })
+      });
       const menuId = pcMenuData.Id;
       if (!menuId) {
-        return []
+        return [];
       }
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time'],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
         order: [
           ['displayIndex', 'DESC'],
-          ['uptime', 'DESC']
+          ['uptime', 'DESC'],
         ],
         include: [
           {
@@ -1118,26 +1068,27 @@ export default class Article extends Service {
             where: {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + menuId + '%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%' + menuId + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + menuId + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menu_id'), menuId),
+                  this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), menuId),
                 ],
               },
-            }
+            },
           },
 
         ],
-        raw: true
+        raw: true,
       });
 
-      return this.checkIsHotOrNew(result) || [];
+      const newData = orderBy(result, ['displayIndex', 'time', 'count'], ['desc', 'desc', 'desc']);
+      return this.checkIsHotOrNew(newData) || [];
 
     } catch (error) {
       return [];
@@ -1153,16 +1104,16 @@ export default class Article extends Service {
           Code: href,
         },
         raw: true,
-      })
+      });
       const menuId = appMenuData.Id;
       if (!menuId) {
-        return []
+        return [];
       }
       let result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo'],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex'],
         order: [
           ['displayIndex', 'DESC'],
-          ['uptime', 'DESC']
+          ['uptime', 'DESC'],
         ],
         include: [
           {
@@ -1172,23 +1123,23 @@ export default class Article extends Service {
             where: {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + menuId + '%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%' + menuId + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), {
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + menuId + ',%',
                   }),
-                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menu_id'), menuId),
+                  this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), menuId),
                 ],
               },
             },
           },
 
         ],
-        raw: true
+        raw: true,
       });
 
       if (result.length) {
@@ -1198,17 +1149,15 @@ export default class Article extends Service {
             uri: 'https://doc.ezrpro.com/article/' + v.uri,
             count: '' + v.count,
             isVideo: '' + v.isVideo,
-            isVideoShow: Boolean(v.isVideo === 1)
-          }
-        })
+            isVideoShow: Boolean(v.isVideo === 1),
+          };
+        });
       }
 
-      return this.checkIsHotOrNew(result) || [];
+      const newData = orderBy(result, ['displayIndex', 'time', 'count'], ['desc', 'desc', 'desc']);
+      return this.checkIsHotOrNew(newData) || [];
 
     } catch (error) {
-      console.log('=============================')
-      console.log(error);
-      console.log('=============================')
 
       return [];
     }

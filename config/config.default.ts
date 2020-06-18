@@ -47,7 +47,7 @@ export default (appInfo: EggAppInfo) => {
       enable: false,
     },
     domainWhiteList: [
-      'http://*:*/',
+      'http://*:*/', '*',
     ],
   };
   config.jsonp = {

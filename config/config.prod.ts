@@ -29,9 +29,9 @@ export default () => {
         delegate: 'baseModel',
         baseDir: 'base_model',
         dialect: 'mysql',
-        host: '192.168.12.41',
-        username: 'ezdev',
-        password: 'WyIrnqdGliZtlQs8i1iY',
+        host: '10.10.96.32',
+        username: 'ezblog',
+        password: 't19M2VwabaALYC3N',
         port: 3306,
         database: 'ezp-base',
         define: {

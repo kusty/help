@@ -378,7 +378,7 @@ export default class ArticleController extends Controller {
 
   public async getCategoryArticleList() {
     const { ctx } = this;
-    let { categoryCode, page, pageSize, type } = ctx.request.query;
+    let { categoryCode, page, pageSize } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getCategoryArticleList(
@@ -386,7 +386,7 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         categoryCode,
-        type,
+        // type,
       },
     );
     if (result) {
@@ -454,7 +454,7 @@ export default class ArticleController extends Controller {
 
   public async getKeywordsArticleList() {
     const { ctx } = this;
-    let { keywords, page, pageSize, type } = ctx.request.query;
+    let { keywords, page, pageSize } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getKeywordsArticleList(
@@ -462,7 +462,6 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         keywords,
-        type,
       },
     );
     if (result) {
@@ -486,7 +485,7 @@ export default class ArticleController extends Controller {
 
   public async getAllArticleList() {
     const { ctx } = this;
-    let { search, page, pageSize, type } = ctx.request.query;
+    let { search, page, pageSize } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.article.getAllArticleList(
@@ -494,7 +493,6 @@ export default class ArticleController extends Controller {
         page,
         pageSize,
         search,
-        type,
       },
     );
     if (result) {
