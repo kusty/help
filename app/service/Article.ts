@@ -575,7 +575,7 @@ export default class Article extends Service {
           { t: '文章链接', k: 'uri' },
           { t: '阅读量', k: 'count' },
           { t: '编辑人', k: 'author' },
-          { t: '编辑时间', k: 'uptime' },
+          { t: '编辑时间', k: 'time' },
           { t: '编辑原因', k: 'editReason' },
         ]],
         sheetName: 'pc菜单文章列表',
@@ -590,7 +590,7 @@ export default class Article extends Service {
           { t: '文章链接', k: 'uri' },
           { t: '阅读量', k: 'count' },
           { t: '编辑人', k: 'author' },
-          { t: '编辑时间', k: 'uptime' },
+          { t: '编辑时间', k: 'time' },
           { t: '编辑原因', k: 'editReason' },
         ]],
         sheetName: 'app菜单文章列表',
@@ -890,7 +890,7 @@ export default class Article extends Service {
 
     try {
 
-      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when time>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
       const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
       });
@@ -978,7 +978,7 @@ export default class Article extends Service {
 
     try {
 
-      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when time>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
       const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
       });
@@ -1020,7 +1020,7 @@ export default class Article extends Service {
 
     try {
 
-      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when uptime>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const data = await this.ctx.model.query('select *, case when display_index is null then 0 else display_index+ 900000000 end as c1, case when time>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
       const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
       });
@@ -1068,7 +1068,7 @@ export default class Article extends Service {
         attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
         order: [
           ['displayIndex', 'DESC'],
-          ['uptime', 'DESC'],
+          ['time', 'DESC'],
         ],
         include: [
           {
@@ -1123,7 +1123,7 @@ export default class Article extends Service {
         attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex'],
         order: [
           ['displayIndex', 'DESC'],
-          ['uptime', 'DESC'],
+          ['time', 'DESC'],
         ],
         include: [
           {
