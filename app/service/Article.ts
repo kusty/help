@@ -2,12 +2,12 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-29 00:48:57
+ * @Last Modified time: 2020-06-23 19:40:12
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
 import moment = require('moment');
-import { sortBy, pick, orderBy } from 'lodash';
+import { sortBy, pick } from 'lodash';
 
 export default class Article extends Service {
   public async checkIsHotOrNew(list) {
@@ -1100,10 +1100,39 @@ export default class Article extends Service {
         raw: true,
       });
 
-      const newData = orderBy(result, ['displayIndex', 'time', 'count'], ['desc', 'desc', 'desc']);
+      // const newData = orderBy(result, ['displayIndex', 'time', 'count'], ['desc', 'desc', 'desc']);
+      const arr = result.map(v => {
+
+
+        if (v.displayIndex > 0) {
+          return {
+            ...v,
+            sort: 900000000000 + v.displayIndex
+          }
+        } else if (new Date().getTime() - new Date(v.time).getTime() <= 7 * 24 * 3600 * 1000) {
+
+          const sort = new Date(v.time).getTime() - new Date().getTime() + 7 * 24 * 3600 * 1000 + 9000000;
+          return {
+            ...v,
+            sort,
+          }
+        }
+        return {
+          ...v,
+          sort: v.count
+        }
+      });
+
+
+
+      const newData = arr.sort((a, b) => {
+        return b.sort - a.sort
+      })
+
       return this.checkIsHotOrNew(newData) || [];
 
     } catch (error) {
+
       return [];
     }
   }
@@ -1162,7 +1191,7 @@ export default class Article extends Service {
         result = result.map(v => {
           return {
             ...v,
-            uri: 'https://doc.ezrpro.com/article/' + v.uri,
+            uri: 'https://help.ezrpro.com/article/' + v.uri,
             count: '' + v.count,
             isVideo: '' + v.isVideo,
             isVideoShow: Boolean(v.isVideo === 1),
@@ -1170,7 +1199,34 @@ export default class Article extends Service {
         });
       }
 
-      const newData = orderBy(result, ['displayIndex', 'time', 'count'], ['desc', 'desc', 'desc']);
+      const arr = result.map(v => {
+
+
+        if (v.displayIndex > 0) {
+          return {
+            ...v,
+            sort: 900000000000 + v.displayIndex
+          }
+        } else if (new Date().getTime() - new Date(v.time).getTime() <= 7 * 24 * 3600 * 1000) {
+
+          const sort = new Date(v.time).getTime() - new Date().getTime() + 7 * 24 * 3600 * 1000 + 9000000;
+          return {
+            ...v,
+            sort,
+          }
+        }
+        return {
+          ...v,
+          sort: v.count
+        }
+      });
+
+
+
+      const newData = arr.sort((a, b) => {
+        return b.sort - a.sort
+      })
+
       return this.checkIsHotOrNew(newData) || [];
 
     } catch (error) {
