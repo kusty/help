@@ -1013,7 +1013,7 @@ export default class Article extends Service {
         ],
       });
     }
-    const newSearch = search ? ('title LIKE "%' + search + '%" OR content LIKE "%' + search + '%" OR keywords LIKE "%' + search + '%" AND') : '';
+    const newSearch = search ? ('title LIKE "%' + search + '%" OR content LIKE "%' + search + '%" OR keywords LIKE "' + search + ',%" OR keywords LIKE "%,' + search + '"  OR keywords LIKE "%,' + search + ',%" AND') : '';
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
 
