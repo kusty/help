@@ -795,7 +795,7 @@ export default class Article extends Service {
       if (type === 'hot') {
         return Object.keys(obj).sort((a, b) => {
           return obj[b] - obj[a];
-        }).slice(0, 20);
+        }).slice(0, 21);
       }
       return Object.keys(obj);
     } catch (error) {
@@ -1013,7 +1013,7 @@ export default class Article extends Service {
         ],
       });
     }
-    const newSearch = search ? ('title LIKE "%' + search + '%" OR content LIKE "%' + search + '%" AND') : '';
+    const newSearch = search ? ('title LIKE "%' + search + '%" OR content LIKE "%' + search + '%" OR keywords LIKE "%' + search + '%" AND') : '';
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
 
