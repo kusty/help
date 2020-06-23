@@ -1020,7 +1020,7 @@ export default class Article extends Service {
 
     try {
 
-      const data = await this.ctx.model.query('select *, case when display_index is null or display_index=0 then 0 else display_index+ 900000000 end as c1, case when time>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
+      const data = await this.ctx.model.query('select *, case when display_index is null or display_index=0 then 0 else display_index+ 900000000 end as c1, case when time>=DATE_ADD(sysdate(),INTERVAL -7 DAY) then DATEDIFF(time,sysdate())+9000000  else 0 end as c2,count as c3  from article WHERE ' + newSearch + ' `status` = 0 order by c1 desc,c2 desc,c3 desc  limit ' + offset + ' , ' + limit);
       const totalCount = await this.ctx.model.Article.count({
         where: queryParmas,
       });
@@ -1070,6 +1070,9 @@ export default class Article extends Service {
           ['displayIndex', 'DESC'],
           ['time', 'DESC'],
         ],
+        where: {
+          status: 0,
+        },
         include: [
           {
             model: this.ctx.model.ArticleMenu,
@@ -1125,6 +1128,9 @@ export default class Article extends Service {
           ['displayIndex', 'DESC'],
           ['time', 'DESC'],
         ],
+        where: {
+          status: 0
+        },
         include: [
           {
             model: this.ctx.model.ArticleMenuApp,
