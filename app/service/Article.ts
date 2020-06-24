@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-06-23 19:40:12
+ * @Last Modified time: 2020-06-24 13:00:01
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -54,6 +54,7 @@ export default class Article extends Service {
 
         categoryCode = catResult.code;
       } else {
+        await transaction.rollback();
         this.ctx.helper.errorBody(10003, '错误的分类');
         return null;
       }
