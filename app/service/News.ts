@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-12 20:04:27
+ * @Last Modified time: 2020-06-24 12:02:04
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -97,7 +97,7 @@ export default class News extends Service {
     if (type) {
       queryParams = {
         type,
-      }
+      };
     }
     try {
       const result = await this.ctx.model.News.findAndCountAll({
@@ -202,18 +202,25 @@ export default class News extends Service {
     const offset = limit * (parseInt(page) - 1);
 
     const queryParams = {
-      status: 0
+      status: 0,
     };
     if (type) {
       Object.assign(queryParams, {
         type,
-      })
+      });
     }
     try {
       const result = await this.ctx.model.News.findAndCountAll({
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
         limit,
         offset,
         where: queryParams,
+        order: [
+          [
+            'time',
+            'DESC',
+          ],
+        ],
       });
       return {
         list: result.rows,
