@@ -1014,7 +1014,7 @@ export default class Article extends Service {
         ],
       });
     }
-    const newSearch = search ? ('title LIKE "%' + search + '%" OR content LIKE "%' + search + '%" OR keywords LIKE "' + search + ',%" OR keywords LIKE "%,' + search + '"  OR keywords LIKE "%,' + search + ',%" AND') : '';
+    const newSearch = search ? ('(title LIKE "%' + search + '%" OR content LIKE "%' + search + '%" OR keywords LIKE "' + search + ',%" OR keywords LIKE "%,' + search + '"  OR keywords LIKE "%,' + search + ',%") AND') : '';
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
 
@@ -1028,7 +1028,9 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']);
+        return pick(v, [
+          'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex',
+        ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
