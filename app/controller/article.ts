@@ -378,17 +378,29 @@ export default class ArticleController extends Controller {
 
   public async getCategoryArticleList() {
     const { ctx } = this;
-    let { categoryCode, page, pageSize } = ctx.request.query;
+    let { categoryCode, page, pageSize, type } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
-    const result = await ctx.service.article.getCategoryArticleList(
-      {
-        page,
-        pageSize,
-        categoryCode,
-        // type,
-      },
-    );
+    let result;
+    if (type === 'recent') {
+      result = await ctx.service.article.getCategoryArticleListByType(
+        {
+          page,
+          pageSize,
+          categoryCode,
+          type,
+        },
+      );
+    } else {
+      result = await ctx.service.article.getCategoryArticleList(
+        {
+          page,
+          pageSize,
+          categoryCode,
+        },
+      );
+    }
+
     if (result) {
       ctx.helper.successBody(result);
     }

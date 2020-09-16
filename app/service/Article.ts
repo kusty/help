@@ -15,7 +15,7 @@ export default class Article extends Service {
       return list;
     }
     const articleList = await this.ctx.model.Article.findAll({
-      attributes: ['count', 'time'],
+      attributes: [ 'count', 'time' ],
       raw: true,
     });
 
@@ -274,7 +274,7 @@ export default class Article extends Service {
       console.log(1212123209090909099900);
       console.log(newList);
       const result = await this.ctx.model.Article.bulkCreate(newList,
-        { updateOnDuplicate: ['displayIndex', 'id'] },
+        { updateOnDuplicate: [ 'displayIndex', 'id' ] },
       );
       if (result) {
         return result;
@@ -339,7 +339,7 @@ export default class Article extends Service {
         offset,
         where: queryParmas,
         order: [
-          ['time', 'DESC'],
+          [ 'time', 'DESC' ],
         ],
         include: [
           {
@@ -756,7 +756,7 @@ export default class Article extends Service {
     }
     try {
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ],
         where: queryParmas,
         order,
         limit: 5,
@@ -771,7 +771,7 @@ export default class Article extends Service {
   async getKeywordsList(type) {
     try {
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['keywords'],
+        attributes: [ 'keywords' ],
         raw: true,
         where: {
           status: 0,
@@ -898,13 +898,58 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']);
+        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
         totalCount,
         current: parseInt(page),
       };
+
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+  }
+
+
+  async getCategoryArticleListByType({ page, pageSize, categoryCode, type }) {
+
+    const queryParmas = {
+      status: 0,
+    };
+    if (categoryCode) {
+      Object.assign(queryParmas, {
+        categoryCode: {
+          [this.app.Sequelize.Op.like]: categoryCode + '%',
+        },
+      });
+    }
+    const limit = parseInt(pageSize);
+    const offset = limit * (parseInt(page) - 1);
+    let order: any[] = [];
+    if (type === 'recent') {
+      order = [
+        [
+          'time', 'DESC',
+        ],
+      ];
+    }
+    if (type === 'hot') {
+      order = [
+        [
+          'count', 'DESC',
+        ],
+      ];
+    }
+    try {
+      return await this.ctx.model.Article.findAll({
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail' ],
+        where: queryParmas,
+        order,
+        limit,
+        offset,
+        raw: true,
+      });
 
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
@@ -986,7 +1031,7 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex']);
+        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -1068,10 +1113,10 @@ export default class Article extends Service {
         return [];
       }
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ],
         order: [
-          ['displayIndex', 'DESC'],
-          ['time', 'DESC'],
+          [ 'displayIndex', 'DESC' ],
+          [ 'time', 'DESC' ],
         ],
         where: {
           status: 0,
@@ -1110,27 +1155,26 @@ export default class Article extends Service {
         if (v.displayIndex > 0) {
           return {
             ...v,
-            sort: 900000000000 + v.displayIndex
-          }
+            sort: 900000000000 + v.displayIndex,
+          };
         } else if (new Date().getTime() - new Date(v.time).getTime() <= 7 * 24 * 3600 * 1000) {
 
           const sort = new Date(v.time).getTime() - new Date().getTime() + 7 * 24 * 3600 * 1000 + 9000000;
           return {
             ...v,
             sort,
-          }
+          };
         }
         return {
           ...v,
-          sort: v.count
-        }
+          sort: v.count,
+        };
       });
 
 
-
       const newData = arr.sort((a, b) => {
-        return b.sort - a.sort
-      })
+        return b.sort - a.sort;
+      });
 
       return this.checkIsHotOrNew(newData) || [];
 
@@ -1155,13 +1199,13 @@ export default class Article extends Service {
         return [];
       }
       let result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex' ],
         order: [
-          ['displayIndex', 'DESC'],
-          ['time', 'DESC'],
+          [ 'displayIndex', 'DESC' ],
+          [ 'time', 'DESC' ],
         ],
         where: {
-          status: 0
+          status: 0,
         },
         include: [
           {
@@ -1208,27 +1252,26 @@ export default class Article extends Service {
         if (v.displayIndex > 0) {
           return {
             ...v,
-            sort: 900000000000 + v.displayIndex
-          }
+            sort: 900000000000 + v.displayIndex,
+          };
         } else if (new Date().getTime() - new Date(v.time).getTime() <= 7 * 24 * 3600 * 1000) {
 
           const sort = new Date(v.time).getTime() - new Date().getTime() + 7 * 24 * 3600 * 1000 + 9000000;
           return {
             ...v,
             sort,
-          }
+          };
         }
         return {
           ...v,
-          sort: v.count
-        }
+          sort: v.count,
+        };
       });
 
 
-
       const newData = arr.sort((a, b) => {
-        return b.sort - a.sort
-      })
+        return b.sort - a.sort;
+      });
 
       return this.checkIsHotOrNew(newData) || [];
 
