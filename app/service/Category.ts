@@ -110,6 +110,7 @@ export default class Category extends Service {
       const result = await this.ctx.model.Category.update({
         name: params.name,
         displayIndex: Number(params.displayIndex),
+        isShowMain: Number(params.isShowMain) === 1 ? 1 : 0,
       }, {
         where: {
           id: Number(params.id),
@@ -127,19 +128,10 @@ export default class Category extends Service {
   }
 
   public async updateCategoryStatus(params) {
-    const updateData = {};
-    if (params.state) {
-      Object.assign(updateData, {
-        isNotShow: Number(params.state) === 1 ? 0 : 1,
-      });
-    }
-    if (params.isShowMain) {
-      Object.assign(updateData, {
-        isShowMain: Number(params.isShowMain) === 1 ? 1 : 0,
-      });
-    }
     try {
-      const result = await this.ctx.model.Category.update(updateData, {
+      const result = await this.ctx.model.Category.update({
+        isNotShow: Number(params.state) === 1 ? 0 : 1,
+      }, {
         where: {
           id: Number(params.id),
         },
