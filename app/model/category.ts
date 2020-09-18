@@ -19,10 +19,16 @@ module.exports = app => {
       type: INTEGER,
       field: 'displayIdx',
     },
+    // 是否禁用
     isNotShow: {
       type: TINYINT(1),
       defaltValue: 0,
       field: 'isNotShow',
+    },
+    // 是否在EZR首页显示
+    isShowMain: {
+      type: TINYINT(1),
+      defaltValue: 0,
     },
   }, {
     freezeTableName: true,

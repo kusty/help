@@ -219,6 +219,8 @@ export default class Article extends Service {
           title: params.title,
           keywords: params.keywords,
           thumbnail: params.thumbnail,
+          subTitle: params.subTitle,
+          logo: params.logo,
           content: params.content,
           abstract: params.abstract,
           isVideo: params.isVideo,
@@ -614,6 +616,8 @@ export default class Article extends Service {
             'categoryCode',
             'uri',
             'keywords',
+            'subTitle',
+            'logo',
             'thumbnail',
             'content',
             'abstract',
@@ -815,6 +819,8 @@ export default class Article extends Service {
             'categoryCode',
             'uri',
             'keywords',
+            'subTitle',
+            'logo',
             'thumbnail',
             'content',
             'abstract',
@@ -898,7 +904,8 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ]);
+        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo' ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -943,7 +950,8 @@ export default class Article extends Service {
     }
     try {
       return await this.ctx.model.Article.findAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail' ],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail', 'subTitle',
+          'logo' ],
         where: queryParmas,
         order,
         limit,
@@ -960,6 +968,9 @@ export default class Article extends Service {
 
     const queryParmas = {
       isNotShow: {
+        [this.app.Sequelize.Op.ne]: 1,
+      },
+      isShowMain: {
         [this.app.Sequelize.Op.ne]: 1,
       },
     };
@@ -1031,7 +1042,8 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ]);
+        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo' ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -1074,7 +1086,8 @@ export default class Article extends Service {
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
         return pick(v, [
-          'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex',
+          'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo',
         ]);
       });
       return {
@@ -1113,7 +1126,8 @@ export default class Article extends Service {
         return [];
       }
       const result = await this.ctx.model.Article.findAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo' ],
         order: [
           [ 'displayIndex', 'DESC' ],
           [ 'time', 'DESC' ],
@@ -1199,7 +1213,8 @@ export default class Article extends Service {
         return [];
       }
       let result = await this.ctx.model.Article.findAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex' ],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex', 'subTitle',
+          'logo' ],
         order: [
           [ 'displayIndex', 'DESC' ],
           [ 'time', 'DESC' ],
