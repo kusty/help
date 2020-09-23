@@ -929,6 +929,7 @@ export default class Article extends Service {
         categoryCode: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
+        showStatus: 1,
       });
     }
     const limit = parseInt(pageSize);

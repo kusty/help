@@ -105,7 +105,7 @@ export default class News extends Service {
         offset,
         where: queryParams,
         order: [
-          ['time', 'DESC'],
+          [ 'time', 'DESC' ],
         ],
       });
       return {
@@ -197,7 +197,7 @@ export default class News extends Service {
     }
   }
 
-  public async getNewsList({ page, pageSize, type }) {
+  public async getNewsList({ page, pageSize, type, source }) {
     const limit = parseInt(pageSize);
     const offset = limit * (parseInt(page) - 1);
 
@@ -209,9 +209,14 @@ export default class News extends Service {
         type,
       });
     }
+    if (source) {
+      Object.assign(queryParams, {
+        showStatus: 1,
+      });
+    }
     try {
       const result = await this.ctx.model.News.findAndCountAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'time'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'time' ],
         limit,
         offset,
         where: queryParams,

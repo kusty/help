@@ -272,7 +272,7 @@ export default class NewsController extends Controller {
 
   public async getNewsList() {
     const { ctx } = this;
-    let { page, pageSize, type } = ctx.request.query;
+    let { page, pageSize, type, source } = ctx.request.query;
     page = page || '1';
     pageSize = pageSize || '10';
     const result = await ctx.service.news.getNewsList(
@@ -280,6 +280,7 @@ export default class NewsController extends Controller {
         page,
         pageSize,
         type,
+        source,
       },
     );
     if (result) {
