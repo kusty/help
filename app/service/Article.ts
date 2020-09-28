@@ -950,7 +950,7 @@ export default class Article extends Service {
       ];
     }
     try {
-      return await this.ctx.model.Article.findAll({
+      const result = await this.ctx.model.Article.findAndCountAll({
         attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail', 'subTitle',
           'logo' ],
         where: queryParmas,
@@ -959,7 +959,11 @@ export default class Article extends Service {
         offset,
         raw: true,
       });
-
+      return {
+        list: result.rows,
+        totalCount: result.count,
+        current: parseInt(page),
+      };
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
