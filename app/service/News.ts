@@ -105,7 +105,7 @@ export default class News extends Service {
         offset,
         where: queryParams,
         order: [
-          [ 'time', 'DESC' ],
+          ['time', 'DESC'],
         ],
       });
       return {
@@ -208,6 +208,10 @@ export default class News extends Service {
       Object.assign(queryParams, {
         type,
       });
+    } else {
+      Object.assign(queryParams, {
+        type: [2, 3, 4, 5, 6],
+      });
     }
     if (source) {
       Object.assign(queryParams, {
@@ -216,7 +220,7 @@ export default class News extends Service {
     }
     try {
       const result = await this.ctx.model.News.findAndCountAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'time' ],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'time', 'content'],
         limit,
         offset,
         where: queryParams,

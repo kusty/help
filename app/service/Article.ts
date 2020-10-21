@@ -15,7 +15,7 @@ export default class Article extends Service {
       return list;
     }
     const articleList = await this.ctx.model.Article.findAll({
-      attributes: [ 'count', 'time' ],
+      attributes: ['count', 'time'],
       raw: true,
     });
 
@@ -276,7 +276,7 @@ export default class Article extends Service {
       console.log(1212123209090909099900);
       console.log(newList);
       const result = await this.ctx.model.Article.bulkCreate(newList,
-        { updateOnDuplicate: [ 'displayIndex', 'id' ] },
+        { updateOnDuplicate: ['displayIndex', 'id'] },
       );
       if (result) {
         return result;
@@ -341,7 +341,7 @@ export default class Article extends Service {
         offset,
         where: queryParmas,
         order: [
-          [ 'time', 'DESC' ],
+          ['time', 'DESC'],
         ],
         include: [
           {
@@ -760,7 +760,7 @@ export default class Article extends Service {
     }
     try {
       const result = await this.ctx.model.Article.findAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
         where: queryParmas,
         order,
         limit: 5,
@@ -775,7 +775,7 @@ export default class Article extends Service {
   async getKeywordsList(type) {
     try {
       const result = await this.ctx.model.Article.findAll({
-        attributes: [ 'keywords' ],
+        attributes: ['keywords'],
         raw: true,
         where: {
           status: 0,
@@ -904,8 +904,8 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
-          'logo' ]);
+        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo']);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -923,13 +923,13 @@ export default class Article extends Service {
 
     const queryParmas = {
       status: 0,
+      showStatus: 1,
     };
     if (categoryCode) {
       Object.assign(queryParmas, {
         categoryCode: {
           [this.app.Sequelize.Op.like]: categoryCode + '%',
         },
-        showStatus: 1,
       });
     }
     const limit = parseInt(pageSize);
@@ -951,8 +951,8 @@ export default class Article extends Service {
     }
     try {
       const result = await this.ctx.model.Article.findAndCountAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail', 'subTitle',
-          'logo' ],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail', 'subTitle',
+          'logo'],
         where: queryParmas,
         order,
         limit,
@@ -1047,8 +1047,8 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
-          'logo' ]);
+        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo']);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -1131,11 +1131,11 @@ export default class Article extends Service {
         return [];
       }
       const result = await this.ctx.model.Article.findAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
-          'logo' ],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo'],
         order: [
-          [ 'displayIndex', 'DESC' ],
-          [ 'time', 'DESC' ],
+          ['displayIndex', 'DESC'],
+          ['time', 'DESC'],
         ],
         where: {
           status: 0,
@@ -1218,11 +1218,11 @@ export default class Article extends Service {
         return [];
       }
       let result = await this.ctx.model.Article.findAll({
-        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex', 'subTitle',
-          'logo' ],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex', 'subTitle',
+          'logo'],
         order: [
-          [ 'displayIndex', 'DESC' ],
-          [ 'time', 'DESC' ],
+          ['displayIndex', 'DESC'],
+          ['time', 'DESC'],
         ],
         where: {
           status: 0,
