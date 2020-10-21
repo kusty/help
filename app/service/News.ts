@@ -220,7 +220,7 @@ export default class News extends Service {
     }
     try {
       const result = await this.ctx.model.News.findAndCountAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'time', 'content'],
+        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'time', 'content', 'contentType'],
         limit,
         offset,
         where: queryParams,
