@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 17:11:57
+ * @Last Modified time: 2020-11-25 13:26:37
  */
 import { Controller } from 'egg';
 
@@ -421,9 +421,9 @@ export default class ArticleController extends Controller {
 
   public async getKeywordsList() {
     const { ctx } = this;
-    let { type } = ctx.request.query;
+    let { type, sort } = ctx.request.query;
     type = type || 'all';
-    const result = await ctx.service.article.getKeywordsList(type);
+    const result = await ctx.service.article.getKeywordsList(type, Boolean(sort) || false);
     if (result) {
       ctx.helper.successBody(result);
     }
@@ -537,5 +537,25 @@ export default class ArticleController extends Controller {
     }
   }
 
+  public async getAllKeywordList() {
+    const { ctx } = this;
+    const result = await ctx.service.article.getKeywordsList('', true);
+    if (result) {
+      this.ctx.body = {
+        data: result,
+        result: true,
+        msg: 'get success',
+
+      };
+    }
+  }
+
+  public async getArticleSearchList() {
+    const { ctx } = this;
+    const result = await ctx.service.article.getArticleSearchList('');
+    if (result) {
+      ctx.helper.successBody(result);
+    }
+  }
 
 }

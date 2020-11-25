@@ -2,12 +2,13 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-06-24 13:00:01
+ * @Last Modified time: 2020-11-25 13:30:56
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
 import moment = require('moment');
 import { sortBy, pick } from 'lodash';
+import { makePy } from '../utils/ChinesePY';
 
 export default class Article extends Service {
   public async checkIsHotOrNew(list) {
@@ -124,9 +125,7 @@ export default class Article extends Service {
     }
 
   }
-
   public async editArticle(params) {
-
     try {
       const articleId = params.id;
 
@@ -251,7 +250,6 @@ export default class Article extends Service {
     }
 
   }
-
   public async editArticleDisplayIndex(list) {
 
     try {
@@ -272,9 +270,6 @@ export default class Article extends Service {
         }
 
       }
-
-      console.log(1212123209090909099900);
-      console.log(newList);
       const result = await this.ctx.model.Article.bulkCreate(newList,
         { updateOnDuplicate: ['displayIndex', 'id'] },
       );
@@ -287,7 +282,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   public async getList({ page, pageSize,
     title,
     pcMenuIds,
@@ -399,7 +393,6 @@ export default class Article extends Service {
     }
 
   }
-
   public async exportList({
     title,
     pcMenuIds,
@@ -604,7 +597,6 @@ export default class Article extends Service {
     }
 
   }
-
   public async getArticleDetail(id: string) {
     try {
       const result = await this.ctx.model.Article.findOne(
@@ -666,7 +658,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   public async deleteArticle(id) {
 
     try {
@@ -695,8 +686,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
-
   public async articleCounted(id) {
     try {
       const result = await this.ctx.model.Article.increment({
@@ -717,7 +706,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   async getListForMain({ categoryCode, type }) {
 
     const queryParmas = {
@@ -771,8 +759,7 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
-  async getKeywordsList(type) {
+  async getKeywordsList(type, sort = false) {
     try {
       const result = await this.ctx.model.Article.findAll({
         attributes: ['keywords'],
@@ -785,12 +772,17 @@ export default class Article extends Service {
       result.forEach(v => {
 
         if (v.keywords) {
-          const arr = v.keywords.split(',');
+          const newStr = v.keywords.replace(/，/g, ',');
+          const arr = newStr.split(',');
+
           arr.forEach(vs => {
-            if (obj[vs]) {
-              obj[vs]++;
-            } else {
-              obj[vs] = 1;
+            const key = vs.trim();
+            if (key) {
+              if (obj[key]) {
+                obj[key]++;
+              } else {
+                obj[key] = 1;
+              }
             }
           });
 
@@ -802,12 +794,33 @@ export default class Article extends Service {
           return obj[b] - obj[a];
         }).slice(0, 21);
       }
-      return Object.keys(obj);
+      const data = Object.keys(obj);
+
+      if (sort) {
+        const newObj = {};
+        for (const key in obj) {
+          if (obj.hasOwnProperty(key)) {
+            const char = makePy(key.substr(0, 1))[0].toUpperCase();
+            if (typeof char === 'string') {
+              if (newObj[char]) {
+                newObj[char] = [...newObj[char], key];
+              } else {
+                newObj[char] = [key]
+              }
+            }
+          }
+        }
+        const retData = {};
+        Object.keys(newObj).sort().forEach(v => {
+          retData[v] = newObj[v];
+        });
+        return retData;
+      }
+      return data;
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   public async getArticleDetailByUri(uri: string) {
     try {
       const result = await this.ctx.model.Article.findOne(
@@ -876,7 +889,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   async getCategoryArticleList({ page, pageSize, categoryCode }) {
 
     const queryParmas = {
@@ -917,8 +929,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
-
   async getCategoryArticleListByType({ page, pageSize, categoryCode, type }) {
 
     const queryParmas = {
@@ -968,7 +978,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   async getArticleCategoryList(categoryCode) {
 
     const queryParmas = {
@@ -1017,7 +1026,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   async getKeywordsArticleList({ page, pageSize, keywords }) {
 
     const queryParmas = {
@@ -1060,7 +1068,6 @@ export default class Article extends Service {
       this.ctx.throw('服务器处理错误:' + error);
     }
   }
-
   async getAllArticleList({ page, pageSize, search }) {
 
     const queryParmas = {
@@ -1106,7 +1113,6 @@ export default class Article extends Service {
     }
 
   }
-
   public async getMenuArticleList(href) {
 
     try {
@@ -1202,7 +1208,6 @@ export default class Article extends Service {
       return [];
     }
   }
-
   public async getAppMenuArticleList(href) {
 
     try {
@@ -1299,5 +1304,33 @@ export default class Article extends Service {
 
       return [];
     }
+  }
+  async getArticleSearchList(search) {
+
+    const queryParmas = {
+      status: 0,
+    };
+
+    if (search) {
+
+      Object.assign(queryParmas, {
+        [this.app.Sequelize.Op.or]: [
+          { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
+          { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+          { keywords: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+        ],
+      });
+    }
+    try {
+
+      const result = await this.ctx.model.Article.findAll({
+        where: queryParmas,
+      });
+
+      return result;
+    } catch (error) {
+      this.ctx.throw('服务器处理错误:' + error);
+    }
+
   }
 }

@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-05-27 13:46:53
+ * @Last Modified time: 2020-11-25 13:15:56
  */
 import { Service } from 'egg';
 import moment = require('moment');
@@ -103,12 +103,6 @@ export default class Common extends Service {
       await awaitWriteStream(stream.pipe(writeStream));
       const formUploader = new qiniu.form_up.FormUploader(config);
 
-      console.log('=============================12');
-      console.log(config);
-      console.log(formUploader);
-      console.log('=============================');
-
-
       const putExtra = new qiniu.form_up.PutExtra();
 
       const fileInfo: {
@@ -146,10 +140,6 @@ export default class Common extends Service {
 
     } catch (error) {
 
-      console.log('=============================');
-      console.log(error);
-      console.log('=============================');
-
       // 如果出现错误，关闭管道
       await sendToWormhole(stream);
       return false;
@@ -165,7 +155,9 @@ export default class Common extends Service {
         limit,
         offset,
         order: [
-          ['time', 'DESC'],
+          [
+            'time', 'DESC',
+          ],
         ],
       });
       return {

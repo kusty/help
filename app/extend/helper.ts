@@ -144,7 +144,7 @@ module.exports = {
 
         });
       });
-    })
+    });
 
     this.ctx.set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
     this.ctx.set('Content-Disposition', 'attachment;filename=' + name + '.xlsx');
