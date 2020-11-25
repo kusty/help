@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-11-25 13:30:56
+ * @Last Modified time: 2020-11-25 20:51:33
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1307,27 +1307,70 @@ export default class Article extends Service {
   }
   async getArticleSearchList(search) {
 
-    const queryParmas = {
-      status: 0,
-    };
 
-    if (search) {
 
-      Object.assign(queryParmas, {
-        [this.app.Sequelize.Op.or]: [
-          { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
-          { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
-          { keywords: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
-        ],
-      });
-    }
     try {
+      if (search) {
 
-      const result = await this.ctx.model.Article.findAll({
-        where: queryParmas,
-      });
+        const queryTitle = {
+          status: 0,
+          [this.app.Sequelize.Op.or]: [
+            { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+          ],
+        };
 
-      return result;
+
+        const r1 = await this.ctx.model.Article.findAll({
+          attributes: ['id', 'title', 'uri'],
+          where: queryTitle,
+          limit: 1000,
+          order: [
+            ['time', 'DESC'],
+          ],
+        });
+        console.log(r1.length);
+        if (r1.length >= 1000) {
+          return r1;
+        }
+        const queryContent = {
+          status: 0,
+          [this.app.Sequelize.Op.and]: [
+            { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
+            { title: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } },
+          ],
+        };
+        const r2 = await this.ctx.model.Article.findAll({
+          attributes: ['id', 'title', 'uri'],
+          where: queryContent,
+          limit: 1000 - r1.length,
+          order: [
+            ['time', 'DESC'],
+          ],
+        });
+        if (r1.length + r2.length >= 1000) {
+          return r1.concat(r2);
+        }
+        const queryKeywords = {
+          status: 0,
+          [this.app.Sequelize.Op.and]: [
+            { content: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } }, // like和or连用
+            { title: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } },
+            { keywords: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+          ],
+        };
+        const r3 = await this.ctx.model.Article.findAll({
+          attributes: [
+            'id', 'title', 'uri',
+          ],
+          where: queryKeywords,
+          limit: 1000 - r1.length - r2.length,
+          order: [
+            ['time', 'DESC'],
+          ],
+        });
+        return r1.concat(r2).concat(r3);
+      }
+      return [];
     } catch (error) {
       this.ctx.throw('服务器处理错误:' + error);
     }

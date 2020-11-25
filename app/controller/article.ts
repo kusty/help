@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:38:12 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-11-25 13:26:37
+ * @Last Modified time: 2020-11-25 20:14:43
  */
 import { Controller } from 'egg';
 
@@ -552,7 +552,9 @@ export default class ArticleController extends Controller {
 
   public async getArticleSearchList() {
     const { ctx } = this;
-    const result = await ctx.service.article.getArticleSearchList('');
+    const { search } = ctx.request.query;
+
+    const result = await ctx.service.article.getArticleSearchList(search);
     if (result) {
       ctx.helper.successBody(result);
     }
