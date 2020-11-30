@@ -800,7 +800,14 @@ export default class Article extends Service {
         const newObj = {};
         for (const key in obj) {
           if (obj.hasOwnProperty(key)) {
-            const char = makePy(key.substr(0, 1))[0].toUpperCase();
+            let char = '';
+            const fChar = key.substr(0, 1);
+            if (fChar === '会') {
+              char = 'K'
+            } else {
+              char = makePy(fChar)[0].toUpperCase();
+            }
+
             if (typeof char === 'string') {
               if (newObj[char]) {
                 newObj[char] = [...newObj[char], key];
