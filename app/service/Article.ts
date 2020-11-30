@@ -1323,47 +1323,47 @@ export default class Article extends Service {
         const r1 = await this.ctx.model.Article.findAll({
           attributes: ['id', 'title', 'uri'],
           where: queryTitle,
-          limit: 1000,
+          limit: 10,
           order: [
             ['time', 'DESC'],
           ],
         });
         console.log(r1.length);
-        if (r1.length >= 1000) {
+        if (r1.length >= 10) {
           return r1;
         }
-        const queryContent = {
+        const queryKeywords = {
           status: 0,
           [this.app.Sequelize.Op.and]: [
-            { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
+            { keywords: { [this.app.Sequelize.Op.like]: '%' + search + '%' } }, // like和or连用
             { title: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } },
           ],
         };
         const r2 = await this.ctx.model.Article.findAll({
           attributes: ['id', 'title', 'uri'],
-          where: queryContent,
-          limit: 1000 - r1.length,
+          where: queryKeywords,
+          limit: 10 - r1.length,
           order: [
             ['time', 'DESC'],
           ],
         });
-        if (r1.length + r2.length >= 1000) {
+        if (r1.length + r2.length >= 10) {
           return r1.concat(r2);
         }
-        const queryKeywords = {
+        const queryContent = {
           status: 0,
           [this.app.Sequelize.Op.and]: [
-            { content: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } }, // like和or连用
+            { keywords: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } }, // like和or连用
             { title: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } },
-            { keywords: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+            { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
           ],
         };
         const r3 = await this.ctx.model.Article.findAll({
           attributes: [
             'id', 'title', 'uri',
           ],
-          where: queryKeywords,
-          limit: 1000 - r1.length - r2.length,
+          where: queryContent,
+          limit: 10 - r1.length - r2.length,
           order: [
             ['time', 'DESC'],
           ],
