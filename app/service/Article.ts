@@ -802,8 +802,9 @@ export default class Article extends Service {
           if (obj.hasOwnProperty(key)) {
             let char = '';
             const fChar = key.substr(0, 1);
+
             if (fChar === '会') {
-              char = 'K'
+              char = 'H'
             } else {
               char = makePy(fChar)[0].toUpperCase();
             }
