@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-11-25 20:51:33
+ * @Last Modified time: 2020-12-02 21:48:03
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1307,10 +1307,9 @@ export default class Article extends Service {
       return [];
     }
   }
-  async getArticleSearchList(search) {
-
-
-
+  async getArticleSearchList({ search, page, pageSize }) {
+    const limit = parseInt(pageSize);
+    const offset = limit * (parseInt(page) - 1);
     try {
       if (search) {
 
@@ -1321,18 +1320,34 @@ export default class Article extends Service {
           ],
         };
 
+        const allCount = await this.ctx.model.Article.count({
+          attributes: ['id'],
+          where: {
+            status: 0,
+            [this.app.Sequelize.Op.or]: [
+              { title: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+              { keywords: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+              { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
+            ],
+          },
 
-        const r1 = await this.ctx.model.Article.findAll({
+        });
+        const r1 = await this.ctx.model.Article.findAndCountAll({
           attributes: ['id', 'title', 'uri'],
           where: queryTitle,
-          limit: 10,
+          limit,
+          offset,
           order: [
             ['time', 'DESC'],
           ],
         });
-        console.log(r1.length);
-        if (r1.length >= 10) {
-          return r1;
+
+        if (r1.rows.length === limit) {
+          return {
+            list: r1.rows,
+            totalCount: allCount,
+            current: parseInt(page),
+          };
         }
         const queryKeywords = {
           status: 0,
@@ -1341,17 +1356,30 @@ export default class Article extends Service {
             { title: { [this.app.Sequelize.Op.notLike]: '%' + search + '%' } },
           ],
         };
-        const r2 = await this.ctx.model.Article.findAll({
+
+        let r2Offset = parseInt(page) - Math.ceil(r1.count / limit);
+
+        if (r2Offset >= 1) {
+          r2Offset = (limit - r1.count % limit) + (r2Offset - 1) * limit
+        }
+        const r2 = await this.ctx.model.Article.findAndCountAll({
           attributes: ['id', 'title', 'uri'],
           where: queryKeywords,
-          limit: 10 - r1.length,
+          limit: limit - r1.rows.length,
+          offset: r2Offset,
           order: [
             ['time', 'DESC'],
           ],
         });
-        if (r1.length + r2.length >= 10) {
-          return r1.concat(r2);
+
+        if (r1.rows.length + r2.rows.length === limit) {
+          return {
+            list: r1.rows.concat(r2.rows),
+            totalCount: allCount,
+            current: parseInt(page),
+          };
         }
+
         const queryContent = {
           status: 0,
           [this.app.Sequelize.Op.and]: [
@@ -1360,17 +1388,28 @@ export default class Article extends Service {
             { content: { [this.app.Sequelize.Op.like]: '%' + search + '%' } },
           ],
         };
-        const r3 = await this.ctx.model.Article.findAll({
+        let r3Offset = parseInt(page) - Math.ceil((r1.count + r2.count) / limit);
+
+        if (r3Offset >= 1) {
+          r3Offset = (limit - (r2.count + r1.count) % limit) + (r3Offset - 1) * limit
+        }
+
+        const r3 = await this.ctx.model.Article.findAndCountAll({
           attributes: [
             'id', 'title', 'uri',
           ],
           where: queryContent,
-          limit: 10 - r1.length - r2.length,
+          limit: limit - r1.rows.length - r2.rows.length,
+          offset: r3Offset,
           order: [
             ['time', 'DESC'],
           ],
         });
-        return r1.concat(r2).concat(r3);
+        return {
+          list: r1.rows.concat(r2.rows).concat(r3.rows),
+          totalCount: allCount,
+          current: parseInt(page),
+        };
       }
       return [];
     } catch (error) {

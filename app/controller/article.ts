@@ -552,9 +552,12 @@ export default class ArticleController extends Controller {
 
   public async getArticleSearchList() {
     const { ctx } = this;
-    const { search } = ctx.request.query;
-
-    const result = await ctx.service.article.getArticleSearchList(search);
+    let { search, page, pageSize } = ctx.request.query;
+    page = page || '1';
+    pageSize = pageSize || '10';
+    const result = await ctx.service.article.getArticleSearchList({
+      search, page, pageSize
+    });
     if (result) {
       ctx.helper.successBody(result);
     }
