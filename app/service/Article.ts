@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-12-02 21:48:03
+ * @Last Modified time: 2020-12-03 21:33:47
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1320,7 +1320,7 @@ export default class Article extends Service {
           ],
         };
 
-        const allCount = await this.ctx.model.Article.count({
+        const result = await this.ctx.model.Article.findAll({
           attributes: ['id'],
           where: {
             status: 0,
@@ -1332,6 +1332,7 @@ export default class Article extends Service {
           },
 
         });
+        const allCount = result.length;
         const r1 = await this.ctx.model.Article.findAndCountAll({
           attributes: ['id', 'title', 'uri'],
           where: queryTitle,
