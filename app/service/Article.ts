@@ -2,7 +2,7 @@
  * @Author: guwei ;
  * @Date: 2020-04-12 15:47:36 ;
  * @Last Modified by: guwei
- * @Last Modified time: 2020-12-03 21:33:47
+ * @Last Modified time: 2020-12-03 22:06:48
  */
 import { Service } from 'egg';
 import uuidv1 = require('uuid/v1');
@@ -1334,7 +1334,7 @@ export default class Article extends Service {
         });
         const allCount = result.length;
         const r1 = await this.ctx.model.Article.findAndCountAll({
-          attributes: ['id', 'title', 'uri'],
+          attributes: ['id', 'title', 'uri', 'time', 'count'],
           where: queryTitle,
           limit,
           offset,
@@ -1364,7 +1364,7 @@ export default class Article extends Service {
           r2Offset = (limit - r1.count % limit) + (r2Offset - 1) * limit
         }
         const r2 = await this.ctx.model.Article.findAndCountAll({
-          attributes: ['id', 'title', 'uri'],
+          attributes: ['id', 'title', 'uri', 'time', 'count'],
           where: queryKeywords,
           limit: limit - r1.rows.length,
           offset: r2Offset,
@@ -1397,7 +1397,7 @@ export default class Article extends Service {
 
         const r3 = await this.ctx.model.Article.findAndCountAll({
           attributes: [
-            'id', 'title', 'uri',
+            'id', 'title', 'uri', 'time', 'count'
           ],
           where: queryContent,
           limit: limit - r1.rows.length - r2.rows.length,
