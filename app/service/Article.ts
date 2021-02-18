@@ -16,7 +16,7 @@ export default class Article extends Service {
       return list;
     }
     const articleList = await this.ctx.model.Article.findAll({
-      attributes: ['count', 'time'],
+      attributes: [ 'count', 'time' ],
       raw: true,
     });
 
@@ -271,7 +271,7 @@ export default class Article extends Service {
 
       }
       const result = await this.ctx.model.Article.bulkCreate(newList,
-        { updateOnDuplicate: ['displayIndex', 'id'] },
+        { updateOnDuplicate: [ 'displayIndex', 'id' ] },
       );
       if (result) {
         return result;
@@ -335,7 +335,7 @@ export default class Article extends Service {
         offset,
         where: queryParmas,
         order: [
-          ['time', 'DESC'],
+          [ 'time', 'DESC' ],
         ],
         include: [
           {
@@ -345,10 +345,10 @@ export default class Article extends Service {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + '%',
+                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds,
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%' + pcMenuIds + ',%',
+                    [this.app.Sequelize.Op.like]: pcMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
@@ -365,10 +365,10 @@ export default class Article extends Service {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds + '%',
+                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds,
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%' + appMenuIds + ',%',
+                    [this.app.Sequelize.Op.like]: appMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
@@ -448,10 +448,10 @@ export default class Article extends Service {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + '%',
+                    [this.app.Sequelize.Op.like]: '%,' + pcMenuIds,
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%' + pcMenuIds + ',%',
+                    [this.app.Sequelize.Op.like]: pcMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + pcMenuIds + ',%',
@@ -468,10 +468,10 @@ export default class Article extends Service {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds + '%',
+                    [this.app.Sequelize.Op.like]: '%,' + appMenuIds,
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%' + appMenuIds + ',%',
+                    [this.app.Sequelize.Op.like]: appMenuIds + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('appMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + appMenuIds + ',%',
@@ -748,7 +748,7 @@ export default class Article extends Service {
     }
     try {
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex' ],
         where: queryParmas,
         order,
         limit: 5,
@@ -762,7 +762,7 @@ export default class Article extends Service {
   async getKeywordsList(type, sort = false) {
     try {
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['keywords'],
+        attributes: [ 'keywords' ],
         raw: true,
         where: {
           status: 0,
@@ -805,9 +805,9 @@ export default class Article extends Service {
 
             if (typeof char === 'string') {
               if (newObj[char]) {
-                newObj[char] = [...newObj[char], key];
+                newObj[char] = [ ...newObj[char], key ];
               } else {
-                newObj[char] = [key]
+                newObj[char] = [ key ];
               }
             }
           }
@@ -918,8 +918,8 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
-          'logo']);
+        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo' ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -963,8 +963,8 @@ export default class Article extends Service {
     }
     try {
       const result = await this.ctx.model.Article.findAndCountAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail', 'subTitle',
-          'logo'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'thumbnail', 'subTitle',
+          'logo' ],
         where: queryParmas,
         order,
         limit,
@@ -1057,8 +1057,8 @@ export default class Article extends Service {
 
       const newArr = data[0].map((v: any) => {
         v.displayIndex = v.display_index;
-        return pick(v, ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
-          'logo']);
+        return pick(v, [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo' ]);
       });
       return {
         list: await this.checkIsHotOrNew(newArr),
@@ -1139,11 +1139,11 @@ export default class Article extends Service {
         return [];
       }
       const result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
-          'logo'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'displayIndex', 'subTitle',
+          'logo' ],
         order: [
-          ['displayIndex', 'DESC'],
-          ['time', 'DESC'],
+          [ 'displayIndex', 'DESC' ],
+          [ 'time', 'DESC' ],
         ],
         where: {
           status: 0,
@@ -1157,10 +1157,10 @@ export default class Article extends Service {
               menuId: {
                 [this.app.Sequelize.Op.or]: [
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%,' + menuId + '%',
+                    [this.app.Sequelize.Op.like]: '%,' + menuId,
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
-                    [this.app.Sequelize.Op.like]: '%' + menuId + ',%',
+                    [this.app.Sequelize.Op.like]: menuId + ',%',
                   }),
                   this.app.Sequelize.where(this.app.Sequelize.col('pcMenu.menuId'), {
                     [this.app.Sequelize.Op.like]: '%,' + menuId + ',%',
@@ -1225,11 +1225,11 @@ export default class Article extends Service {
         return [];
       }
       let result = await this.ctx.model.Article.findAll({
-        attributes: ['id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex', 'subTitle',
-          'logo'],
+        attributes: [ 'id', 'title', 'uri', 'abstract', 'count', 'keywords', 'time', 'isVideo', 'displayIndex', 'subTitle',
+          'logo' ],
         order: [
-          ['displayIndex', 'DESC'],
-          ['time', 'DESC'],
+          [ 'displayIndex', 'DESC' ],
+          [ 'time', 'DESC' ],
         ],
         where: {
           status: 0,
@@ -1321,7 +1321,7 @@ export default class Article extends Service {
         };
 
         const result = await this.ctx.model.Article.findAll({
-          attributes: ['id'],
+          attributes: [ 'id' ],
           where: {
             status: 0,
             [this.app.Sequelize.Op.or]: [
@@ -1334,12 +1334,12 @@ export default class Article extends Service {
         });
         const allCount = result.length;
         const r1 = await this.ctx.model.Article.findAndCountAll({
-          attributes: ['id', 'title', 'uri', 'time', 'count'],
+          attributes: [ 'id', 'title', 'uri', 'time', 'count' ],
           where: queryTitle,
           limit,
           offset,
           order: [
-            ['time', 'DESC'],
+            [ 'time', 'DESC' ],
           ],
         });
 
@@ -1361,15 +1361,15 @@ export default class Article extends Service {
         let r2Offset = parseInt(page) - Math.ceil(r1.count / limit);
 
         if (r2Offset >= 1) {
-          r2Offset = (limit - r1.count % limit) + (r2Offset - 1) * limit
+          r2Offset = (limit - r1.count % limit) + (r2Offset - 1) * limit;
         }
         const r2 = await this.ctx.model.Article.findAndCountAll({
-          attributes: ['id', 'title', 'uri', 'time', 'count'],
+          attributes: [ 'id', 'title', 'uri', 'time', 'count' ],
           where: queryKeywords,
           limit: limit - r1.rows.length,
           offset: r2Offset,
           order: [
-            ['time', 'DESC'],
+            [ 'time', 'DESC' ],
           ],
         });
 
@@ -1392,18 +1392,18 @@ export default class Article extends Service {
         let r3Offset = parseInt(page) - Math.ceil((r1.count + r2.count) / limit);
 
         if (r3Offset >= 1) {
-          r3Offset = (limit - (r2.count + r1.count) % limit) + (r3Offset - 1) * limit
+          r3Offset = (limit - (r2.count + r1.count) % limit) + (r3Offset - 1) * limit;
         }
 
         const r3 = await this.ctx.model.Article.findAndCountAll({
           attributes: [
-            'id', 'title', 'uri', 'time', 'count'
+            'id', 'title', 'uri', 'time', 'count',
           ],
           where: queryContent,
           limit: limit - r1.rows.length - r2.rows.length,
           offset: r3Offset,
           order: [
-            ['time', 'DESC'],
+            [ 'time', 'DESC' ],
           ],
         });
         return {
